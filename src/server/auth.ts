@@ -4,18 +4,28 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema/auth";
 
+const ADMIN_EMAILS = ["shayan@repovive.com"];
+
 export async function getCurrentSession() {
   const { userId: clerkUserId } = await clerkAuth();
 
   if (!clerkUserId) return null;
 
   // Check if user exists in local DB
-  const [localUser] = await db
+  let [localUser] = await db
     .select()
     .from(users)
     .where(eq(users.clerkUserId, clerkUserId));
 
   if (localUser) {
+    // Auto-promote to admin if email is in the list
+    if (ADMIN_EMAILS.includes(localUser.email) && localUser.role !== "admin") {
+      [localUser] = await db
+        .update(users)
+        .set({ role: "admin" })
+        .where(eq(users.id, localUser.id))
+        .returning();
+    }
     return { user: localUser };
   }
 
@@ -34,6 +44,7 @@ export async function getCurrentSession() {
       name: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || "User",
       emailVerified: clerkUser.emailAddresses[0]?.verification?.status === "verified",
       image: clerkUser.imageUrl,
+      role: ADMIN_EMAILS.includes(email) ? "admin" : "user",
     })
     .returning();
 
