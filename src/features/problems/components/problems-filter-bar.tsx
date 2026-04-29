@@ -16,6 +16,15 @@ type ProblemsFilterBarProps = {
   topics: Topic[];
 };
 
+const RATING_PRESETS = [
+  { label: "800-999", min: 800, max: 999 },
+  { label: "1000-1199", min: 1000, max: 1199 },
+  { label: "1200-1399", min: 1200, max: 1399 },
+  { label: "1400-1599", min: 1400, max: 1599 },
+  { label: "1600-1899", min: 1600, max: 1899 },
+  { label: "1900+", min: 1900, max: 3500 },
+];
+
 export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -49,76 +58,111 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
     router.push("/problems");
   }
 
+  function applyPreset(min: number, max: number) {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (topic) params.set("topic", topic);
+    params.set("minRating", min.toString());
+    params.set("maxRating", max.toString());
+    params.set("page", "1");
+    router.push(`/problems?${params.toString()}`);
+  }
+
   return (
-    <form action={applyFilters} className="flex flex-wrap items-end gap-3">
-      <div className="space-y-1">
-        <Label htmlFor="filter-q" className="text-xs">
-          Search
-        </Label>
-        <Input
-          id="filter-q"
-          name="q"
-          placeholder="Title or source…"
-          defaultValue={q}
-          className="h-9 w-44"
-        />
-      </div>
+    <div className="space-y-4">
+      <form action={applyFilters} className="flex flex-wrap items-end gap-3">
+        <div className="space-y-1">
+          <Label htmlFor="filter-q" className="text-xs">
+            Search
+          </Label>
+          <Input
+            id="filter-q"
+            name="q"
+            placeholder="Title or source…"
+            defaultValue={q}
+            className="h-9 w-44"
+          />
+        </div>
 
-      <div className="space-y-1">
-        <Label htmlFor="filter-topic" className="text-xs">
-          Topic
-        </Label>
-        <select
-          id="filter-topic"
-          name="topic"
-          defaultValue={topic}
-          className="flex h-9 w-36 rounded-lg border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <option value="">All topics</option>
-          {topics.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div className="space-y-1">
+          <Label htmlFor="filter-topic" className="text-xs">
+            Topic
+          </Label>
+          <select
+            id="filter-topic"
+            name="topic"
+            defaultValue={topic}
+            className="flex h-9 w-36 rounded-lg border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="">All topics</option>
+            {topics.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div className="space-y-1">
-        <Label htmlFor="filter-min" className="text-xs">
-          Min Rating
-        </Label>
-        <Input
-          id="filter-min"
-          name="minRating"
-          type="number"
-          min="1"
-          placeholder="e.g. 800"
-          defaultValue={minRating}
-          className="h-9 w-28"
-        />
-      </div>
+        <div className="space-y-1">
+          <Label htmlFor="filter-min" className="text-xs">
+            Min Rating
+          </Label>
+          <Input
+            id="filter-min"
+            name="minRating"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Min (e.g. 800)"
+            defaultValue={minRating}
+            className="h-9 w-28"
+          />
+        </div>
 
-      <div className="space-y-1">
-        <Label htmlFor="filter-max" className="text-xs">
-          Max Rating
-        </Label>
-        <Input
-          id="filter-max"
-          name="maxRating"
-          type="number"
-          min="1"
-          placeholder="e.g. 2000"
-          defaultValue={maxRating}
-          className="h-9 w-28"
-        />
-      </div>
+        <div className="space-y-1">
+          <Label htmlFor="filter-max" className="text-xs">
+            Max Rating
+          </Label>
+          <Input
+            id="filter-max"
+            name="maxRating"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Max (e.g. 2000)"
+            defaultValue={maxRating}
+            className="h-9 w-28"
+          />
+        </div>
 
-      <Button type="submit" size="sm" className="h-9">
-        Apply
-      </Button>
-      <Button type="button" size="sm" variant="ghost" className="h-9" onClick={resetFilters}>
-        Reset
-      </Button>
-    </form>
+        <Button type="submit" size="sm" className="h-9">
+          Apply
+        </Button>
+        <Button type="button" size="sm" variant="ghost" className="h-9" onClick={resetFilters}>
+          Reset
+        </Button>
+      </form>
+
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <span className="mr-1 text-xs font-medium text-muted-foreground">Presets:</span>
+        {RATING_PRESETS.map((preset) => {
+          const isActive = minRating === preset.min.toString() && maxRating === preset.max.toString();
+          return (
+            <button
+              key={preset.label}
+              type="button"
+              onClick={() => applyPreset(preset.min, preset.max)}
+              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border"
+              }`}
+            >
+              {preset.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }

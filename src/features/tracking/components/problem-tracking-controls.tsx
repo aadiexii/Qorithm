@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
+import { Bookmark, Check, Minus } from "lucide-react";
 
 import {
   setProblemStatusAction,
@@ -14,12 +15,6 @@ type ProblemTrackingControlsProps = {
   status: "not_started" | "tried" | "solved";
   bookmarked: boolean;
 };
-
-const STATUS_OPTIONS = [
-  { value: "not_started", label: "—" },
-  { value: "tried", label: "Tried" },
-  { value: "solved", label: "✓ Solved" },
-] as const;
 
 export function ProblemTrackingControls({
   problemId,
@@ -41,6 +36,7 @@ export function ProblemTrackingControls({
   }
 
   function handleStatusChange(newStatus: string) {
+    if (newStatus === status) return;
     if (!requireAuth()) return;
     startTransition(() => {
       void setProblemStatusAction(problemId, newStatus);
@@ -56,35 +52,64 @@ export function ProblemTrackingControls({
 
   return (
     <div className="relative flex items-center gap-2">
-      <select
-        value={status}
-        onChange={(e) => handleStatusChange(e.target.value)}
-        disabled={isPending}
-        className={`h-7 rounded border px-1.5 text-xs outline-none transition ${
-          status === "solved"
-            ? "border-green-500/40 bg-green-500/15 text-green-300"
-            : status === "tried"
-              ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-              : "border-border bg-background text-muted-foreground"
-        }`}
-      >
-        {STATUS_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+      <div className="flex h-8 items-center rounded-md border border-border bg-background p-0.5 shadow-sm">
+        <button
+          type="button"
+          onClick={() => handleStatusChange("not_started")}
+          disabled={isPending}
+          title="Not Started"
+          aria-label="Mark as Not Started"
+          className={`flex h-full items-center justify-center rounded-sm px-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            status === "not_started"
+              ? "bg-muted text-foreground shadow-sm"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          } ${isPending ? "opacity-50" : ""}`}
+        >
+          <Minus className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => handleStatusChange("tried")}
+          disabled={isPending}
+          title="Tried"
+          aria-label="Mark as Tried"
+          className={`flex h-full items-center justify-center rounded-sm px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            status === "tried"
+              ? "bg-amber-500/20 text-amber-500 shadow-sm"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          } ${isPending ? "opacity-50" : ""}`}
+        >
+          Tried
+        </button>
+        <button
+          type="button"
+          onClick={() => handleStatusChange("solved")}
+          disabled={isPending}
+          title="Solved"
+          aria-label="Mark as Solved"
+          className={`flex h-full items-center justify-center gap-1.5 rounded-sm px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            status === "solved"
+              ? "bg-green-500/20 text-green-500 shadow-sm"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          } ${isPending ? "opacity-50" : ""}`}
+        >
+          <Check className="h-3.5 w-3.5" /> Solved
+        </button>
+      </div>
 
       <button
         type="button"
         onClick={handleBookmarkToggle}
         disabled={isPending}
         title={bookmarked ? "Remove bookmark" : "Bookmark"}
-        className={`text-lg leading-none transition ${
-          bookmarked ? "text-amber-500" : "text-muted-foreground/40 hover:text-amber-400"
-        }`}
+        aria-label={bookmarked ? "Remove bookmark" : "Bookmark"}
+        className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          bookmarked
+            ? "border-amber-500/30 bg-amber-500/10 text-amber-500"
+            : "border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+        } ${isPending ? "opacity-50" : ""}`}
       >
-        {bookmarked ? "★" : "☆"}
+        <Bookmark className={`h-4 w-4 ${bookmarked ? "fill-amber-500" : ""}`} />
       </button>
 
       {showAuthGate && (
@@ -93,13 +118,13 @@ export function ProblemTrackingControls({
           <div className="flex items-center gap-2">
             <button
               onClick={() => router.push(`/sign-in?redirect_url=${encodeURIComponent(pathname)}`)}
-              className="flex-1 rounded bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="flex-1 rounded bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Sign In
             </button>
             <button
               onClick={() => setShowAuthGate(false)}
-              className="flex-1 rounded border border-border bg-transparent px-3 py-1.5 text-xs font-medium hover:bg-white/5 transition-colors"
+              className="flex-1 rounded border border-border bg-transparent px-3 py-1.5 text-xs font-medium hover:bg-white/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Cancel
             </button>

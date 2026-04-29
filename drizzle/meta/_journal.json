@@ -8,6 +8,13 @@
       "when": 1776587484519,
       "tag": "0000_calm_captain_universe",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777472455179,
+      "tag": "0001_rls_hardening",
+      "breakpoints": true
     }
   ]
 }

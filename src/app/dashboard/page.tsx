@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Flame, Trophy, CalendarDays, Maximize2 } from "lucide-react";
+import { Flame, Trophy, CalendarDays } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { getCurrentSession } from "@/server/auth";
@@ -9,6 +9,7 @@ import { getUserProgressStats, getUserProblemStateMap } from "@/features/trackin
 import { queryProblems } from "@/features/problems/actions";
 import { ProblemsTable } from "@/features/problems/components/problems-table";
 import { PaginationControls } from "@/features/problems/components/pagination-controls";
+import { RatingRail } from "./rating-rail";
 
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -75,58 +76,32 @@ export default async function DashboardPage({ searchParams }: Props) {
       </div>
 
       {/* Rating Chip Selector */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        <Link 
-          href="/dashboard"
-          className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-            !minRating ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
-          }`}
-        >
-          All Ratings
-        </Link>
-        {ratings.map((r) => (
-          <Link
-            key={r}
-            href={`/dashboard?minRating=${r}&maxRating=${r + 99}`}
-            className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              minRating === r ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
-            }`}
-          >
-            {r}-{r + 99}
-          </Link>
-        ))}
-      </div>
+      <RatingRail minRating={minRating} ratings={ratings} />
 
       {/* Two-Column Layout */}
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Left: Problem Table */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex w-full items-center gap-6 border-b border-border/60 pb-px">
+            <div className="flex w-full items-center gap-8 border-b border-border/60 pb-px">
               <Link 
                 href="/dashboard?tab=all" 
-                className={`border-b-2 pb-3 text-sm font-medium transition-colors ${currentTab === "all" ? "border-accent text-accent" : "border-transparent text-slate-400 hover:text-white"}`}
+                className={`border-b-2 pb-3 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${currentTab === "all" ? "border-accent text-accent" : "border-transparent text-slate-400 hover:border-slate-400/50 hover:text-white"}`}
               >
                 All Problems
               </Link>
               <Link 
                 href="/dashboard?tab=bookmarked" 
-                className={`border-b-2 pb-3 text-sm font-medium transition-colors ${currentTab === "bookmarked" ? "border-accent text-accent" : "border-transparent text-slate-400 hover:text-white"}`}
+                className={`border-b-2 pb-3 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${currentTab === "bookmarked" ? "border-amber-400 text-amber-400" : "border-transparent text-slate-400 hover:border-slate-400/50 hover:text-white"}`}
               >
                 Bookmarked
               </Link>
               <Link 
                 href="/dashboard?tab=notes" 
-                className={`border-b-2 pb-3 text-sm font-medium transition-colors ${currentTab === "notes" ? "border-accent text-accent" : "border-transparent text-slate-400 hover:text-white"}`}
+                className={`border-b-2 pb-3 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${currentTab === "notes" ? "border-purple-400 text-purple-400" : "border-transparent text-slate-400 hover:border-slate-400/50 hover:text-white"}`}
               >
                 Notes
               </Link>
-              
-              <div className="ml-auto pb-3">
-                <button className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors">
-                  <Maximize2 className="h-4 w-4" /> Focus Mode
-                </button>
-              </div>
             </div>
           </div>
 

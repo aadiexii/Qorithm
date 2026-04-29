@@ -69,6 +69,8 @@ npm run db:migrate     # Apply migrations
 npm run db:push        # Push schema directly (dev/staging)
 ```
 
+> **Security Note:** RLS must remain enabled for all public tables. The application relies on server-side Drizzle bypassing RLS, but direct Supabase API access must remain securely locked to read-only published catalog data.
+
 ## Architecture Overview
 
 ```

@@ -56,7 +56,7 @@ export default async function SheetSectionPage({ params }: Props) {
       <div>
         <Link
           href="/sheet"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-white"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md px-2 py-1 -ml-2"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Sheet
@@ -110,74 +110,72 @@ export default async function SheetSectionPage({ params }: Props) {
               </div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[60px] text-center">#</TableHead>
-                    <TableHead className="w-36">Status</TableHead>
-                    <TableHead>Problem</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Source</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {section.problems.map((problem, idx) => {
-                    const url = buildProblemUrl(
-                      problem.platform,
-                      problem.externalContestId,
-                      problem.externalProblemIndex,
-                      problem.source,
-                    );
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[60px] text-center">#</TableHead>
+                  <TableHead className="w-[140px]">Status</TableHead>
+                  <TableHead>Problem</TableHead>
+                  <TableHead>Rating</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {section.problems.map((problem, idx) => {
+                  const url = buildProblemUrl(
+                    problem.platform,
+                    problem.externalContestId,
+                    problem.externalProblemIndex,
+                    problem.source,
+                  );
 
-                    return (
-                      <TableRow key={problem.problemId} className="group">
-                        <TableCell className="text-center font-medium text-muted-foreground">
-                          {idx + 1}
-                        </TableCell>
-                        <TableCell>
-                          <ProblemTrackingControls
-                            problemId={problem.problemId}
-                            status={problem.status}
-                            bookmarked={problem.bookmarked}
-                          />
-                        </TableCell>
-                        <TableCell className="font-medium text-white">
-                          {problem.title}
-                        </TableCell>
-                        <TableCell>
-                          {problem.rating ? (
-                            <span className="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-semibold text-slate-300">
-                              {problem.rating}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-slate-400">
-                          {problem.source}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {url ? (
-                            <a
-                              href={url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15"
-                            >
-                              Solve <ExternalLink className="h-3 w-3" />
-                            </a>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">No link</span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
+                  return (
+                    <TableRow key={problem.problemId} className="group">
+                      <TableCell className="text-center font-medium text-muted-foreground">
+                        {idx + 1}
+                      </TableCell>
+                      <TableCell>
+                        <ProblemTrackingControls
+                          problemId={problem.problemId}
+                          status={problem.status}
+                          bookmarked={problem.bookmarked}
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium text-white">
+                        {problem.title}
+                      </TableCell>
+                      <TableCell>
+                        {problem.rating ? (
+                          <span className="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-semibold text-slate-300">
+                            {problem.rating}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-slate-400">
+                        {problem.source}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {url ? (
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          >
+                            Solve <ExternalLink className="h-3 w-3" />
+                          </a>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">No link</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           )}
         </CardContent>
       </Card>
