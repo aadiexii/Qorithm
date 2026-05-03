@@ -149,7 +149,7 @@ export function SheetMappingClient({ sections }: { sections: Section[] }) {
                           <div className="font-medium">{m.title}</div>
                           <div className="text-xs text-muted-foreground">{m.source}</div>
                         </TableCell>
-                        <TableCell>{m.rating ?? "-"}</TableCell>
+                        <TableCell>{m.rating ?? (m.platform === "atcoder" && m.externalDifficulty ? `${m.externalDifficulty} (AC)` : "-")}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
                             <Button
@@ -226,7 +226,7 @@ export function SheetMappingClient({ sections }: { sections: Section[] }) {
                     >
                       <div>
                         <div className="text-sm font-medium">{p.title}</div>
-                        <div className="text-xs text-muted-foreground">{p.source} • Rating: {p.rating ?? "N/A"}</div>
+                        <div className="text-xs text-muted-foreground">{p.source} • Rating: {p.rating ?? (p.platform === "atcoder" && p.externalDifficulty ? `${p.externalDifficulty} (AC)` : "N/A")}</div>
                       </div>
                       <Button
                         size="sm"

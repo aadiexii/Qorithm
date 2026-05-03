@@ -14,7 +14,10 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "npx tsx scripts/seed.ts"
+    "db:seed": "npx tsx scripts/seed.ts",
+    "curriculum:build": "node scripts/build-qorithm-curriculum.mjs",
+    "curriculum:import": "npx tsx scripts/import-curriculum.ts",
+    "curriculum:topics:backfill": "npx tsx scripts/backfill-problem-topics.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.2.4",

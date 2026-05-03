@@ -68,6 +68,16 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
     router.push(`/problems?${params.toString()}`);
   }
 
+  function applyQuickTopic(topicId: string) {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (topic !== topicId) params.set("topic", topicId);
+    if (minRating) params.set("minRating", minRating);
+    if (maxRating) params.set("maxRating", maxRating);
+    params.set("page", "1");
+    router.push(`/problems?${params.toString()}`);
+  }
+
   return (
     <div className="space-y-4">
       <form action={applyFilters} className="flex flex-wrap items-end gap-3">
@@ -143,7 +153,31 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
         </Button>
       </form>
 
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex flex-col gap-3 pt-2">
+        {topics.length > 0 && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <span className="mr-1 text-xs font-medium text-muted-foreground">Topics:</span>
+            {topics.slice(0, 6).map((t) => {
+              const isActive = topic === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => applyQuickTopic(t.id)}
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border"
+                  }`}
+                >
+                  {t.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         <span className="mr-1 text-xs font-medium text-muted-foreground">Presets:</span>
         {RATING_PRESETS.map((preset) => {
           const isActive = minRating === preset.min.toString() && maxRating === preset.max.toString();
@@ -162,6 +196,7 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
             </button>
           );
         })}
+        </div>
       </div>
     </div>
   );

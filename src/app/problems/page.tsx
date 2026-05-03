@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 
-import { db } from "@/db";
-import { topics } from "@/db/schema/problems";
 import { queryProblems } from "@/features/problems/actions";
 import { PaginationControls } from "@/features/problems/components/pagination-controls";
 import { ProblemsFilterBar } from "@/features/problems/components/problems-filter-bar";
 import { ProblemsTable } from "@/features/problems/components/problems-table";
 import { getUserProblemStateMap } from "@/features/tracking/actions";
+import { queryTopics } from "@/features/topics/actions";
 
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -15,21 +14,9 @@ type Props = {
 export default async function ProblemsPage({ searchParams }: Props) {
   const params = await searchParams;
 
-  // Ensure topics exist (idempotent seed from Sprint 1A)
-  let allTopics = await db.query.topics.findMany({
-    orderBy: (topics, { asc }) => [asc(topics.name)],
-  });
-
-  if (allTopics.length === 0) {
-    await db.insert(topics).values([
-      { slug: "arrays", name: "Arrays" },
-      { slug: "hash-map", name: "Hash Map" },
-      { slug: "simulation", name: "Simulation" },
-    ]);
-    allTopics = await db.query.topics.findMany({
-      orderBy: (topics, { asc }) => [asc(topics.name)],
-    });
-  }
+  // Only show topics that actually have at least one published problem
+  const allTopics = await queryTopics();
+  const mappedTopics = allTopics.filter((t) => t.usageCount > 0);
 
   // Parse query params
   const q = typeof params.q === "string" ? params.q : undefined;
@@ -54,12 +41,12 @@ export default async function ProblemsPage({ searchParams }: Props) {
         </p>
         <h1 className="text-3xl font-semibold tracking-tight">Problem catalog</h1>
         <p className="text-muted-foreground">
-          Search and filter curated problems backed by your Supabase database.
+          Browse and filter curated competitive programming problems by topic, difficulty, and source.
         </p>
       </div>
 
       <Suspense fallback={null}>
-        <ProblemsFilterBar topics={allTopics} />
+        <ProblemsFilterBar topics={mappedTopics} />
       </Suspense>
 
       <ProblemsTable

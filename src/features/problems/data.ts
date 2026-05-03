@@ -3,6 +3,8 @@ export type ProblemPreview = {
   title: string;
   source: string;
   rating: number | null;
+  externalDifficulty?: number | null;
+  platform?: "custom" | "codeforces" | "atcoder";
   topics: string[];
 };
 

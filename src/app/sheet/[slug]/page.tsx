@@ -28,6 +28,15 @@ function buildProblemUrl(
   if (platform === "codeforces" && contestId && index) {
     return `https://codeforces.com/contest/${contestId}/problem/${index}`;
   }
+  if (platform === "atcoder" && index) {
+    const contestFromSource = /^AtCoder\s+([a-z0-9_]+)$/i.exec(source)?.[1];
+    if (contestFromSource) {
+      return `https://atcoder.jp/contests/${contestFromSource}/tasks/${index}`;
+    }
+  }
+  if (/^https?:\/\//i.test(source)) {
+    return source;
+  }
   // Simple heuristic for LeetCode from source string like "LeetCode 1"
   if (platform === "custom" && source.toLowerCase().includes("leetcode")) {
     // For now, link to LeetCode problemset
@@ -149,6 +158,10 @@ export default async function SheetSectionPage({ params }: Props) {
                         {problem.rating ? (
                           <span className="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-semibold text-slate-300">
                             {problem.rating}
+                          </span>
+                        ) : problem.platform === "atcoder" && problem.externalDifficulty ? (
+                          <span className="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-semibold text-slate-300" title="AtCoder Difficulty">
+                            {problem.externalDifficulty} (AC)
                           </span>
                         ) : (
                           <span className="text-muted-foreground">-</span>

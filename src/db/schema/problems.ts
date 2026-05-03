@@ -10,6 +10,7 @@ export const problems = pgTable(
     title: text("title").notNull(),
     source: text("source").notNull(),
     rating: integer("rating"),
+    externalDifficulty: integer("external_difficulty"),
     platform: platformEnum("platform").notNull().default("custom"),
     externalContestId: integer("external_contest_id"),
     externalProblemIndex: text("external_problem_index"),

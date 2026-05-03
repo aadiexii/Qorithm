@@ -22,6 +22,7 @@ export type SheetSectionProblemRow = {
   title: string;
   source: string;
   rating: number | null;
+  externalDifficulty: number | null;
   platform: "custom" | "codeforces" | "atcoder";
   externalContestId: number | null;
   externalProblemIndex: string | null;

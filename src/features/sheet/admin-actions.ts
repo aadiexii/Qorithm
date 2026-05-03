@@ -23,6 +23,8 @@ export async function searchProblemsForMapping(query: string = "") {
       title: problems.title,
       source: problems.source,
       rating: problems.rating,
+      externalDifficulty: problems.externalDifficulty,
+      platform: problems.platform,
     })
     .from(problems)
     .where(query ? sql`${problems.title} ILIKE ${search} OR ${problems.source} ILIKE ${search}` : undefined)
@@ -39,6 +41,8 @@ export async function getSectionMappings(sectionId: string) {
       title: problems.title,
       source: problems.source,
       rating: problems.rating,
+      externalDifficulty: problems.externalDifficulty,
+      platform: problems.platform,
       orderIndex: sheetSectionProblems.orderIndex,
     })
     .from(sheetSectionProblems)

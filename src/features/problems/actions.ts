@@ -1,6 +1,6 @@
 "use server";
 
-import { and, count, desc, eq, gte, ilike, lte, or, SQL } from "drizzle-orm";
+import { and, count, desc, eq, gte, ilike, lte, or, SQL, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
@@ -55,30 +55,25 @@ export async function queryProblems(filters: ProblemsFilter = {}) {
     conditions.push(or(ilike(problems.title, search), ilike(problems.source, search))!);
   }
 
+  const effectiveRating = sql<number>`COALESCE(${problems.rating}, ${problems.externalDifficulty})`;
+
   if (filters.minRating) {
-    conditions.push(gte(problems.rating, filters.minRating));
+    conditions.push(gte(effectiveRating, filters.minRating));
   }
 
   if (filters.maxRating) {
-    conditions.push(lte(problems.rating, filters.maxRating));
+    conditions.push(lte(effectiveRating, filters.maxRating));
   }
 
-  // Topic filter requires a subquery-like approach via the join table
+  // Topic filter using a robust IN subquery (prevents N+1 and duplicate rows)
   if (filters.topic) {
-    const matchingProblemIds = await db
+    const { inArray } = await import("drizzle-orm");
+    const subquery = db
       .select({ problemId: problemTopics.problemId })
       .from(problemTopics)
       .where(eq(problemTopics.topicId, filters.topic));
 
-    const ids = matchingProblemIds.map((r) => r.problemId);
-
-    if (ids.length === 0) {
-      return { items: [], total: 0, page, pageSize, totalPages: 0 };
-    }
-
-    // Use OR chain for matching ids since drizzle `inArray` works well here
-    const { inArray } = await import("drizzle-orm");
-    conditions.push(inArray(problems.id, ids));
+    conditions.push(inArray(problems.id, subquery));
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
