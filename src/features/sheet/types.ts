@@ -29,6 +29,7 @@ export type SheetSectionProblemRow = {
   orderIndex: number;
   status: "not_started" | "tried" | "solved";
   bookmarked: boolean;
+  note: string | null;
 };
 
 export type SheetSectionDetail = {

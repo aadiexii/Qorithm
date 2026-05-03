@@ -10,6 +10,9 @@ import { RecentSolvesClient } from "@/features/dashboard/components/recent-solve
 import { getTodayChallenge, getUserStreak } from "@/features/dashboard/potd-actions";
 import { PotdCard } from "@/features/dashboard/components/potd-card";
 import { SolveHeatmap } from "@/features/dashboard/components/solve-heatmap";
+import { db } from "@/db";
+import { users } from "@/db/schema/auth";
+import { eq } from "drizzle-orm";
 
 export default async function DashboardPage() {
   const session = await getCurrentSession();
@@ -17,9 +20,17 @@ export default async function DashboardPage() {
 
   const progress = await getUserProgressStats();
   
+  // Fetch CF connection status for POTD gating
+  const [userRecord] = await db
+    .select({ codeforcesHandle: users.codeforcesHandle })
+    .from(users)
+    .where(eq(users.id, session.user.id));
+  const cfConnected = !!userRecord?.codeforcesHandle;
+
   // Fetch recent user activity for the new Solved Focus view
   const recentSolved = await getRecentUserProblemStates("solved", 20);
   const recentAttempted = await getRecentUserProblemStates("attempted", 20);
+  const recentBookmarked = await getRecentUserProblemStates("bookmarked", 20);
 
   // Fetch POTD and Streak info
   const potd = await getTodayChallenge();
@@ -47,7 +58,7 @@ export default async function DashboardPage() {
         </Card>
 
         <div className="sm:col-span-1 lg:col-span-2">
-          <PotdCard potd={potd} streak={streak} />
+          <PotdCard potd={potd} streak={streak} cfConnected={cfConnected} />
         </div>
       </div>
 
@@ -55,7 +66,7 @@ export default async function DashboardPage() {
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Left: Problem Table */}
         <div className="lg:col-span-2 space-y-4">
-          <RecentSolvesClient solved={recentSolved} attempted={recentAttempted} />
+          <RecentSolvesClient solved={recentSolved} attempted={recentAttempted} bookmarked={recentBookmarked} />
         </div>
 
         <div className="space-y-6">

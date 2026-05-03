@@ -7,7 +7,7 @@ import { problems } from "@/db/schema/problems";
 import { getCurrentSession } from "@/server/auth";
 
 export async function getRecentUserProblemStates(
-  tab: "solved" | "attempted" = "solved",
+  tab: "solved" | "attempted" | "bookmarked" = "solved",
   limit = 20
 ) {
   const session = await getCurrentSession();
@@ -20,6 +20,7 @@ export async function getRecentUserProblemStates(
       stateId: userProblemStates.id,
       status: userProblemStates.status,
       updatedAt: userProblemStates.updatedAt,
+      note: userProblemStates.note,
       problemId: problems.id,
       title: problems.title,
       source: problems.source,
@@ -34,7 +35,9 @@ export async function getRecentUserProblemStates(
     .where(
       and(
         eq(userProblemStates.userId, session.user.id),
-        inArray(userProblemStates.status, statuses as ("not_started" | "tried" | "solved")[])
+        tab === "bookmarked" 
+          ? eq(userProblemStates.bookmarked, true)
+          : inArray(userProblemStates.status, statuses as ("not_started" | "tried" | "solved")[])
       )
     )
     .orderBy(desc(userProblemStates.updatedAt))

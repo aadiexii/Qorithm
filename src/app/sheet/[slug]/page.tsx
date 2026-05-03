@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ShieldAlert } from "lucide-react";
 
 import { getCurrentSession } from "@/server/auth";
 import { getSheetSectionBySlug } from "@/features/sheet/actions";
@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProblemTrackingControls } from "@/features/tracking/components/problem-tracking-controls";
+import { ProblemActions } from "@/features/problems/components/problem-actions";
 import { buildProblemUrl } from "@/lib/problem-url";
 
 type Props = {
@@ -124,6 +125,7 @@ export default async function SheetSectionPage({ params }: Props) {
                           problemId={problem.problemId}
                           status={problem.status}
                           bookmarked={problem.bookmarked}
+                          note={problem.note}
                         />
                       </TableCell>
                       <TableCell className="font-medium text-white">
@@ -146,18 +148,11 @@ export default async function SheetSectionPage({ params }: Props) {
                         {problem.source}
                       </TableCell>
                       <TableCell className="text-right">
-                        {url ? (
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          >
-                            Solve <ExternalLink className="h-3 w-3" />
-                          </a>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">No link</span>
-                        )}
+                        <ProblemActions 
+                          problemId={problem.problemId} 
+                          solveUrl={url} 
+                          note={problem.note} 
+                        />
                       </TableCell>
                     </TableRow>
                   );

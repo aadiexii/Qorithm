@@ -52,6 +52,11 @@ async function main() {
     `;
 
     await sql`
+      ALTER TABLE "user_problem_states"
+      ADD COLUMN IF NOT EXISTS "note" text;
+    `;
+
+    await sql`
       CREATE TABLE IF NOT EXISTS "user_streaks" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
         "user_id" uuid NOT NULL UNIQUE REFERENCES "users"("id") ON DELETE cascade,

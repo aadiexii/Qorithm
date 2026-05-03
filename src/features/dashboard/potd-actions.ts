@@ -5,12 +5,24 @@ import { eq, desc, and, sql, notInArray } from "drizzle-orm";
 import { userDailyChallenges, userStreaks } from "@/db/schema/challenges";
 import { userProblemStates } from "@/db/schema/tracking";
 import { problems } from "@/db/schema/problems";
+import { users } from "@/db/schema/auth";
 import { getCurrentSession } from "@/server/auth";
 
 // Gets or creates today's daily challenge for the user
 export async function getTodayChallenge() {
   const session = await getCurrentSession();
   if (!session) return null;
+
+  // Strictly gate on Codeforces connection
+  const [userRecord] = await db
+    .select({ codeforcesHandle: users.codeforcesHandle })
+    .from(users)
+    .where(eq(users.id, session.user.id));
+
+  if (!userRecord?.codeforcesHandle) {
+    // Codeforces not connected — no POTD assigned
+    return null;
+  }
 
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
@@ -44,40 +56,37 @@ export async function getTodayChallenge() {
     return existing;
   }
 
-  // Calculate target rating prioritizing Codeforces
-  const recentSolves = await db
-    .select({ 
-      rating: problems.rating, 
-      externalDifficulty: problems.externalDifficulty,
-      platform: problems.platform
+  // Target rating: strictly Codeforces solves only
+  const cfSolves = await db
+    .select({
+      rating: problems.rating,
     })
     .from(userProblemStates)
     .innerJoin(problems, eq(problems.id, userProblemStates.problemId))
-    .where(and(eq(userProblemStates.userId, session.user.id), eq(userProblemStates.status, "solved")))
+    .where(
+      and(
+        eq(userProblemStates.userId, session.user.id),
+        eq(userProblemStates.status, "solved"),
+        eq(problems.platform, "codeforces")
+      )
+    )
     .orderBy(desc(userProblemStates.updatedAt))
-    .limit(30);
+    .limit(10);
 
   let targetRating = 800;
-  let basis = "Based on the default starting skill level.";
+  let basis: string;
 
-  if (recentSolves.length > 0) {
-    // Prefer Codeforces rating
-    const cfSolves = recentSolves.filter(r => r.platform === "codeforces" && r.rating);
-    if (cfSolves.length > 0) {
-      // Use last 10 CF solves
-      const recentCf = cfSolves.slice(0, 10);
-      const sum = recentCf.reduce((acc, row) => acc + Number(row.rating), 0);
-      targetRating = Math.round(sum / recentCf.length);
-      basis = `Derived from your recent Codeforces performance (avg rating ${targetRating}).`;
+  if (cfSolves.length > 0) {
+    const validCf = cfSolves.filter((r) => r.rating != null);
+    if (validCf.length > 0) {
+      const sum = validCf.reduce((acc, row) => acc + Number(row.rating), 0);
+      targetRating = Math.round(sum / validCf.length);
+      basis = `Based on your last ${validCf.length} Codeforces solve${validCf.length > 1 ? "s" : ""} (avg rating ${targetRating}).`;
     } else {
-      // Fallback to COALESCE rating
-      const validSolves = recentSolves.filter(r => r.rating || r.externalDifficulty).slice(0, 10);
-      if (validSolves.length > 0) {
-        const sum = validSolves.reduce((acc, row) => acc + Number(row.rating || row.externalDifficulty), 0);
-        targetRating = Math.round(sum / validSolves.length);
-        basis = `Derived from your recent overall solve history (avg rating ${targetRating}).`;
-      }
+      basis = `Based on ${cfSolves.length} Codeforces solve${cfSolves.length > 1 ? "s" : ""} with no rated problems yet — defaulting to ${targetRating}.`;
     }
+  } else {
+    basis = `No Codeforces solves found yet — defaulting to ${targetRating}.`;
   }
 
   // Find unsolved problem near target rating

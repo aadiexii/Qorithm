@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Flame, ExternalLink, CalendarClock, Trophy } from "lucide-react";
+import { Flame, ExternalLink, CalendarClock, Trophy, Zap } from "lucide-react";
 import { buildProblemUrl } from "@/lib/problem-url";
 
 type POTD = {
@@ -28,9 +29,11 @@ type StreakInfo = {
 export function PotdCard({
   potd,
   streak,
+  cfConnected,
 }: {
   potd: POTD | null;
   streak: StreakInfo;
+  cfConnected: boolean;
 }) {
   const [timeLeft, setTimeLeft] = useState<string>("");
 
@@ -58,12 +61,21 @@ export function PotdCard({
           <CardTitle className="flex items-center gap-2">
             <CalendarClock className="h-5 w-5 text-accent" /> Daily Challenge
           </CardTitle>
-          <CardDescription>Solve daily to build your streak!</CardDescription>
+          <CardDescription>
+            {cfConnected
+              ? "No suitable problems found. Keep solving on Codeforces!"
+              : "Connect Codeforces to unlock your personalized Daily Challenge."}
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            No suitable problems found for your target rating. Keep solving!
-          </p>
+          {!cfConnected && (
+            <Link
+              href="/settings"
+              className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-accent-foreground shadow hover:bg-accent/90 transition-colors"
+            >
+              <Zap className="h-4 w-4" /> Connect Codeforces
+            </Link>
+          )}
         </CardContent>
       </Card>
     );

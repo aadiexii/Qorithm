@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ExternalLink, CheckCircle2, History } from "lucide-react";
+import { CheckCircle2, History, Bookmark } from "lucide-react";
 import { buildProblemUrl } from "@/lib/problem-url";
+import { ProblemActions } from "@/features/problems/components/problem-actions";
 
 type ProblemState = {
   stateId: string;
@@ -20,17 +20,20 @@ type ProblemState = {
   platform: "custom" | "codeforces" | "atcoder";
   externalContestId: number | null;
   externalProblemIndex: string | null;
+  note?: string | null;
 };
 
 export function RecentSolvesClient({
   solved,
   attempted,
+  bookmarked,
 }: {
   solved: ProblemState[];
   attempted: ProblemState[];
+  bookmarked: ProblemState[];
 }) {
-  const [activeTab, setActiveTab] = useState<"solved" | "attempted">("solved");
-  const data = activeTab === "solved" ? solved : attempted;
+  const [activeTab, setActiveTab] = useState<"solved" | "attempted" | "bookmarked">("solved");
+  const data = activeTab === "solved" ? solved : activeTab === "attempted" ? attempted : bookmarked;
 
   return (
     <Card className="bg-card/80">
@@ -56,6 +59,14 @@ export function RecentSolvesClient({
             <History className="w-4 h-4 mr-2" />
             Attempted
           </Button>
+          <Button
+            size="sm"
+            variant={activeTab === "bookmarked" ? "default" : "secondary"}
+            onClick={() => setActiveTab("bookmarked")}
+          >
+            <Bookmark className="w-4 h-4 mr-2" />
+            Bookmarked
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -64,11 +75,10 @@ export function RecentSolvesClient({
             <p className="text-sm text-muted-foreground mb-4">
               {activeTab === "solved"
                 ? "You haven't solved any problems yet."
-                : "No recent attempts found."}
+                : activeTab === "attempted"
+                ? "No recent attempts found."
+                : "No bookmarked problems found."}
             </p>
-            <Link href="/problems" className={buttonVariants({ variant: "default" })}>
-              Explore Problems
-            </Link>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -119,29 +129,17 @@ export function RecentSolvesClient({
                         }).format(new Date(p.updatedAt))}
                       </TableCell>
                       <TableCell className="text-right">
-                        {solveUrl ? (
-                          <a
-                            href={solveUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15"
-                          >
-                            Solve <ExternalLink className="h-3 w-3" />
-                          </a>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">No link</span>
-                        )}
+                        <ProblemActions 
+                          problemId={p.problemId} 
+                          solveUrl={solveUrl} 
+                          note={p.note ?? null} 
+                        />
                       </TableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             </Table>
-            <div className="mt-4 flex justify-center">
-              <Link href="/problems" className="text-sm font-medium hover:underline text-accent">
-                View full catalog →
-              </Link>
-            </div>
           </div>
         )}
       </CardContent>

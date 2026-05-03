@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProblemTrackingControls } from "@/features/tracking/components/problem-tracking-controls";
+import { ProblemActions } from "./problem-actions";
 import type { ProblemStateMap } from "@/features/tracking/actions";
 import { buildProblemUrl } from "@/lib/problem-url";
 
@@ -74,6 +74,7 @@ export function ProblemsTable({
                         problemId={problem.id}
                         status={state?.status ?? "not_started"}
                         bookmarked={state?.bookmarked ?? false}
+                        note={state?.note ?? null}
                       />
                     </TableCell>
                     <TableCell className="font-medium text-foreground">
@@ -96,18 +97,11 @@ export function ProblemsTable({
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      {solveUrl ? (
-                        <a
-                          href={solveUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                          Solve <ExternalLink className="h-3 w-3" />
-                        </a>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">No link</span>
-                      )}
+                      <ProblemActions 
+                        problemId={problem.id} 
+                        solveUrl={solveUrl} 
+                        note={state?.note ?? null} 
+                      />
                     </TableCell>
                   </TableRow>
                 );

@@ -14,7 +14,7 @@ import { getCurrentSession } from "@/server/auth";
 
 export type ProblemStateMap = Record<
   string,
-  { status: "not_started" | "tried" | "solved"; bookmarked: boolean }
+  { status: "not_started" | "tried" | "solved"; bookmarked: boolean; note: string | null }
 >;
 
 export type UserProgressStats = {
@@ -42,6 +42,7 @@ export async function getUserProblemStateMap(problemIds: string[]): Promise<Prob
       problemId: userProblemStates.problemId,
       status: userProblemStates.status,
       bookmarked: userProblemStates.bookmarked,
+      note: userProblemStates.note,
     })
     .from(userProblemStates)
     .where(
@@ -53,7 +54,7 @@ export async function getUserProblemStateMap(problemIds: string[]): Promise<Prob
 
   const map: ProblemStateMap = {};
   for (const row of rows) {
-    map[row.problemId] = { status: row.status, bookmarked: row.bookmarked };
+    map[row.problemId] = { status: row.status, bookmarked: row.bookmarked, note: row.note };
   }
   return map;
 }
@@ -185,5 +186,38 @@ export async function toggleProblemBookmarkAction(
   } catch (error) {
     console.error("Failed to toggle bookmark:", error);
     return { success: false, message: "Failed to toggle bookmark." };
+  }
+}
+
+export async function upsertProblemNoteAction(
+  problemId: string,
+  note: string,
+): Promise<{ success: boolean; message: string }> {
+  const session = await getCurrentSession();
+  if (!session) return { success: false, message: "Unauthorized." };
+
+  const now = new Date();
+
+  try {
+    await db
+      .insert(userProblemStates)
+      .values({
+        userId: session.user.id,
+        problemId,
+        note,
+        updatedAt: now,
+      })
+      .onConflictDoUpdate({
+        target: [userProblemStates.userId, userProblemStates.problemId],
+        set: { note, updatedAt: now },
+      });
+
+    revalidatePath("/problems");
+    revalidatePath("/dashboard");
+
+    return { success: true, message: "Note saved." };
+  } catch (error) {
+    console.error("Failed to save note:", error);
+    return { success: false, message: "Failed to save note." };
   }
 }

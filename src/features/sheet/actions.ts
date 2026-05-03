@@ -158,6 +158,7 @@ export async function getSheetSectionBySlug(
       orderIndex: sheetSectionProblems.orderIndex,
       status: userProblemStates.status,
       bookmarked: userProblemStates.bookmarked,
+      note: userProblemStates.note,
     })
     .from(sheetSectionProblems)
     .innerJoin(problems, eq(problems.id, sheetSectionProblems.problemId))
@@ -183,6 +184,7 @@ export async function getSheetSectionBySlug(
     orderIndex: row.orderIndex,
     status: row.status ?? "not_started",
     bookmarked: row.bookmarked ?? false,
+    note: row.note ?? null,
   }));
 
   return {

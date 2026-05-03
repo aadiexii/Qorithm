@@ -16,6 +16,11 @@
   - [x] Daily Challenge (POTD) and Streak tracking.
   - [x] Codeforces and AtCoder platform integrations via unified `PlatformConnections`.
   - [x] Admin KPI and layout upgrades (Overview, Users, Problems, Topics, Activity tabs).
+- [x] **Phase 6**: Dashboard & Engagement Refinement.
+  - [x] Solved-focused dashboard feed (Solved/Attempted/Bookmarked tabs) with no external catalog CTAs.
+  - [x] Problem Notes system (End-to-End) with markdown support.
+  - [x] Real Codeforces-Based POTD logic (strictly gated on CF connection, smart target rating).
+  - [x] Unified "Actions" column parity across `/problems`, `/sheet`, and dashboard (Solve, Note).
 
 ## Remaining Roadmap
 

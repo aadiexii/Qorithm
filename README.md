@@ -5,8 +5,9 @@ Master algorithms systematically. Qorithm is a modern platform designed to strea
 ## Key Features
 - **Curated Problem Sheets**: Follow structured tracks to master algorithms step-by-step.
 - **Unified Problem Catalog**: Filter problems by search and rating.
-- **Progress Dashboard**: Track your solved problems, attempt history, and daily challenge (POTD) streaks.
-- **Platform Integrations**: Automatically sync your solves from Codeforces and AtCoder.
+- **Progress Dashboard**: Track your solved problems, attempt history, bookmarks, and personalized Daily Challenge (POTD).
+- **Problem Notes**: Maintain private markdown notes for any problem in the catalog.
+- **Platform Integrations**: Automatically sync your solves from Codeforces and AtCoder to unlock smart daily recommendations.
 - **Professional Admin Console**: KPI-driven admin view for managing users, problems, topics, and viewing global activity.
 
 ## Tech Stack

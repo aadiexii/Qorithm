@@ -22,7 +22,7 @@
 - `users`: Core local table, synced with Clerk. Includes `role` (`user` vs `admin`) and platform sync timestamps.
 - `problems`, `topics`, `problem_topics`: The core CP domain model.
 - `sheet_sections`, `sheet_section_problems`: The Sheet module dictating curated learning tracks.
-- `user_problem_states`: Progress tracking model associating users to specific problem outcomes.
+- `user_problem_states`: Progress tracking model associating users to specific problem outcomes. Now includes a `note` column for the Private Problem Notes feature.
 - `challenges` (in `challenges.ts`): Engagement models, including `daily_challenges`, `user_daily_challenges`, and `user_streaks`.
 
 ## Security Model

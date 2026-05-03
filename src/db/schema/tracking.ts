@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, index, pgEnum, pgTable, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, pgEnum, pgTable, timestamp, uniqueIndex, uuid, text } from "drizzle-orm/pg-core";
 
 import { users } from "./auth";
 import { problems } from "./problems";
@@ -18,6 +18,7 @@ export const userProblemStates = pgTable(
       .references(() => problems.id, { onDelete: "cascade" }),
     status: problemStatusEnum("status").notNull().default("not_started"),
     bookmarked: boolean("bookmarked").notNull().default(false),
+    note: text("note"),
     solvedAt: timestamp("solved_at", { withTimezone: true }),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },
