@@ -59,7 +59,7 @@ export function ProblemTrackingControls({
           disabled={isPending}
           title="Not Started"
           aria-label="Mark as Not Started"
-          className={`flex h-full items-center justify-center rounded-sm px-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex h-full items-center justify-center rounded-sm px-2.5 transition-colors cursor-pointer disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             status === "not_started"
               ? "bg-muted text-foreground shadow-sm"
               : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
@@ -73,7 +73,7 @@ export function ProblemTrackingControls({
           disabled={isPending}
           title="Tried"
           aria-label="Mark as Tried"
-          className={`flex h-full items-center justify-center rounded-sm px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex h-full items-center justify-center rounded-sm px-2.5 text-xs font-medium transition-colors cursor-pointer disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             status === "tried"
               ? "bg-amber-500/20 text-amber-500 shadow-sm"
               : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
@@ -87,7 +87,7 @@ export function ProblemTrackingControls({
           disabled={isPending}
           title="Solved"
           aria-label="Mark as Solved"
-          className={`flex h-full items-center justify-center gap-1.5 rounded-sm px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex h-full items-center justify-center gap-1.5 rounded-sm px-2.5 text-xs font-medium transition-colors cursor-pointer disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             status === "solved"
               ? "bg-green-500/20 text-green-500 shadow-sm"
               : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
@@ -103,7 +103,7 @@ export function ProblemTrackingControls({
         disabled={isPending}
         title={bookmarked ? "Remove bookmark" : "Bookmark"}
         aria-label={bookmarked ? "Remove bookmark" : "Bookmark"}
-        className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors cursor-pointer disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
           bookmarked
             ? "border-amber-500/30 bg-amber-500/10 text-amber-500"
             : "border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground"

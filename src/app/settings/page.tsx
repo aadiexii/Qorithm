@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
-
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { users } from "@/db/schema/auth";
 import { getCurrentSession } from "@/server/auth";
-import { getCodeforcesHandle } from "@/features/codeforces/actions";
-import { CfSyncPanel } from "@/features/codeforces/components/cf-sync-panel";
+import { PlatformConnections } from "@/features/dashboard/components/platform-connections";
 
 export default async function SettingsPage() {
   const session = await getCurrentSession();
@@ -11,7 +12,7 @@ export default async function SettingsPage() {
     redirect("/");
   }
 
-  const cfHandle = await getCodeforcesHandle();
+  const [user] = await db.select().from(users).where(eq(users.id, session.user.id));
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-12">
@@ -25,7 +26,13 @@ export default async function SettingsPage() {
         </p>
       </div>
 
-      <CfSyncPanel initialHandle={cfHandle} />
+      <div className="max-w-2xl">
+        <PlatformConnections 
+          codeforces={{ handle: user.codeforcesHandle, lastSync: user.codeforcesLastSyncAt }}
+          atcoder={{ handle: user.atcoderHandle, lastSync: user.atcoderLastSyncAt }}
+        />
+      </div>
+
     </div>
   );
 }

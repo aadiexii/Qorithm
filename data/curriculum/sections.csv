@@ -1,0 +1,31 @@
+section_no,section_name,section_slug,description,difficulty_start,difficulty_end
+1,"C++ Core Foundations","cpp-core-foundations","C++ Core Foundations practice track with progression from fundamentals to advanced checkpoints.",800,1450
+2,"STL in Practice","stl-in-practice","STL in Practice practice track with progression from fundamentals to advanced checkpoints.",800,1450
+3,"Math Essentials for CP","math-essentials-for-cp","Math Essentials for CP practice track with progression from fundamentals to advanced checkpoints.",800,1450
+4,"Implementation Basics","implementation-basics","Implementation Basics practice track with progression from fundamentals to advanced checkpoints.",800,1450
+5,"Greedy Decisions","greedy-decisions","Greedy Decisions practice track with progression from fundamentals to advanced checkpoints.",900,1750
+6,"Recursive Exploration","recursive-exploration","Recursive Exploration practice track with progression from fundamentals to advanced checkpoints.",900,1750
+7,"Bitwise Toolkit","bitwise-toolkit","Bitwise Toolkit practice track with progression from fundamentals to advanced checkpoints.",900,1750
+8,"Range Sum Patterns","range-sum-patterns","Range Sum Patterns practice track with progression from fundamentals to advanced checkpoints.",900,1750
+9,"Binary Search Precision","binary-search-precision","Binary Search Precision practice track with progression from fundamentals to advanced checkpoints.",900,1750
+10,"Pointer Control","pointer-control","Pointer Control practice track with progression from fundamentals to advanced checkpoints.",900,1750
+11,"Sorting and Order Logic","sorting-and-order-logic","Sorting and Order Logic practice track with progression from fundamentals to advanced checkpoints.",900,1750
+12,"Constructive Strategies","constructive-strategies","Constructive Strategies practice track with progression from fundamentals to advanced checkpoints.",900,1750
+13,"State Transition Basics (DP I)","state-transition-basics-dp-i","State Transition Basics (DP I) practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+14,"Graph Traversal Core","graph-traversal-core","Graph Traversal Core practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+15,"Tree Reasoning Core","tree-reasoning-core","Tree Reasoning Core practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+16,"DSU and Component Merging","dsu-and-component-merging","DSU and Component Merging practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+17,"Segment Trees in Practice","segment-trees-in-practice","Segment Trees in Practice practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+18,"Number Theory Core","number-theory-core","Number Theory Core practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+19,"Combinatorics and Probability","combinatorics-and-probability","Combinatorics and Probability practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+20,"String Algorithms Core","string-algorithms-core","String Algorithms Core practice track with progression from fundamentals to advanced checkpoints.",1100,2050
+21,"Advanced DP Patterns","advanced-dp-patterns","Advanced DP Patterns practice track with progression from fundamentals to advanced checkpoints.",1350,2250
+22,"Advanced Graph Techniques","advanced-graph-techniques","Advanced Graph Techniques practice track with progression from fundamentals to advanced checkpoints.",1350,2250
+23,"Advanced Number Theory","advanced-number-theory","Advanced Number Theory practice track with progression from fundamentals to advanced checkpoints.",1350,2250
+24,"Game Theory Essentials","game-theory-essentials","Game Theory Essentials practice track with progression from fundamentals to advanced checkpoints.",1350,2250
+25,"Mixed Checkpoint Set A","mixed-checkpoint-set-a","Mixed Checkpoint Set A practice track with progression from fundamentals to advanced checkpoints.",1400,2350
+26,"Mixed Checkpoint Set B","mixed-checkpoint-set-b","Mixed Checkpoint Set B practice track with progression from fundamentals to advanced checkpoints.",1400,2350
+27,"Mixed Checkpoint Set C","mixed-checkpoint-set-c","Mixed Checkpoint Set C practice track with progression from fundamentals to advanced checkpoints.",1400,2350
+28,"Contest Readiness Set D","contest-readiness-set-d","Contest Readiness Set D practice track with progression from fundamentals to advanced checkpoints.",1600,2500
+29,"Contest Readiness Set E","contest-readiness-set-e","Contest Readiness Set E practice track with progression from fundamentals to advanced checkpoints.",1600,2500
+30,"Elite Mixed Set F","elite-mixed-set-f","Elite Mixed Set F practice track with progression from fundamentals to advanced checkpoints.",1850,2800

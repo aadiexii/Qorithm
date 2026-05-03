@@ -103,7 +103,7 @@ export default async function HomePage() {
               <p className="text-sm text-slate-400 leading-relaxed mb-6">Use Problems filters for topic-wise and rating-wise prep.</p>
               <div className="mt-auto">
                 <Link href="/problems" className="inline-flex h-9 items-center justify-center rounded-md bg-white/10 px-4 text-xs font-semibold text-white transition-colors hover:bg-white/20 w-full">
-                  Practice by Topic
+                  Practice by Topic/Rating
                 </Link>
               </div>
             </div>

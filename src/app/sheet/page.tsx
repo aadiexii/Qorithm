@@ -3,6 +3,8 @@ import { ArrowRight, BookOpen, CheckCircle, ChevronRight, LayersIcon } from "luc
 
 import { getCurrentSession } from "@/server/auth";
 import { getSheetSectionsWithProgress, getNextRecommendedSection } from "@/features/sheet/actions";
+import { getTodayChallenge } from "@/features/dashboard/potd-actions";
+import { PotdBanner } from "@/features/dashboard/components/potd-banner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import type { SheetSectionProgress } from "@/features/sheet/types";
 
@@ -86,9 +88,10 @@ function SectionCard({
 export default async function SheetPage() {
   const session = await getCurrentSession();
 
-  const [sections, recommended] = await Promise.all([
+  const [sections, recommended, potd] = await Promise.all([
     getSheetSectionsWithProgress(session?.user?.id),
     getNextRecommendedSection(session?.user?.id),
+    getTodayChallenge(),
   ]);
 
   const completedCount = sections.filter((s) => s.statusLabel === "Completed").length;
@@ -109,6 +112,8 @@ export default async function SheetPage() {
           Work through each section in order. Problems within sections are curated for deliberate progression.
         </p>
       </div>
+
+      <PotdBanner potdTitle={potd?.title} isSolved={potd?.status === "completed"} />
 
       {/* Stats row */}
       {sections.length > 0 && (

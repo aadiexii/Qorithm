@@ -8,7 +8,14 @@
   - [x] Auth Gate UX (React state popup instead of `window.confirm`).
   - [x] Dashboard Realism (removed `Math.random()` fake metrics).
   - [x] Admin Scalability (Drizzle `limit`/`offset` and `ILIKE` search for user management).
-  - [x] Landing V3 implementation (Minimal Educational style, removal of AI-hype elements).
+  - [x] Landing V3 implementation (Minimal Educational style).
+- [x] **Phase 5**: Dashboard & Engagement Overhaul.
+  - [x] Simplified `/problems` filter UI (Search + Rating presets, removed complex topic bar).
+  - [x] Shared sheet-style Actions column for problem rows.
+  - [x] Solved-focused dashboard progress view.
+  - [x] Daily Challenge (POTD) and Streak tracking.
+  - [x] Codeforces and AtCoder platform integrations via unified `PlatformConnections`.
+  - [x] Admin KPI and layout upgrades (Overview, Users, Problems, Topics, Activity tabs).
 
 ## Remaining Roadmap
 
@@ -19,8 +26,6 @@
 - [ ] **Admin Bootstrap**: Manually execute SQL to promote the founding member to `admin`.
 
 ### [Post-Launch]
-- [ ] **Streak Tracking Logic**: Replace the stable dashboard fallback (`0`) with a robust daily commit-graph calculation from `user_problem_states`.
 - [ ] **Leaderboard Implementation**: Create a global ranking system based on problem difficulty and quantity solved.
-- [ ] **Codeforces OAuth**: Upgrade the settings page to handle proper OAuth handshakes rather than relying solely on handle scraping.
 - [ ] **Postgres Full-Text Search**: Upgrade admin `ILIKE` queries to `tsvector` indices as the user base scales beyond 10,000 records.
-
+- [ ] **Extended Platform Sync**: Add integrations for LeetCode or HackerRank.

@@ -121,7 +121,7 @@ export function ProblemsFilterBar() {
               key={preset.label}
               type="button"
               onClick={() => applyPreset(preset.min, preset.max)}
-              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border"

@@ -59,3 +59,9 @@
 - **Scalable Admin Tables**: For admin lists (like Users), combining Drizzle's `LIMIT`/`OFFSET` for pagination with `ILIKE` for debounced text search keeps the page lightning-fast without loading thousands of records into memory.
 - **Landing Minimalism**: High-converting educational products benefit from disciplined, compact typography and precise micro-interactions (like canvas mouse-repel) rather than overwhelming, generic "AI-generated" CSS 3D visuals.
 
+## Dashboard & Admin Enhancements
+- **Adapter Pattern for Integrations**: Abstracting Codeforces and AtCoder (via Kenkoooo) syncing behind a `PlatformAdapter` interface significantly cleans up the sync controller, allowing seamless injection of new platforms without repeating user state upsert logic.
+- **POTD Algorithm**: Storing daily challenge history per user in `user_daily_challenges` allows deterministic assignment. Calculating a user's target rating dynamically based on their last 10 solved problems provides a self-adjusting difficulty curve.
+- **Streak Maintenance**: Resolving streaks dynamically (updating `user_streaks.currentStreak` based on whether `lastActiveDate` was yesterday or today) creates an engaging, Duolingo-like retention loop.
+- **Drizzle Kit UX**: When encountering interactive prompt blocks (`promptNamedWithSchemasConflict`) in CI/CD or pooled connection setups during `drizzle-kit push`, writing a manual script using `sql.unsafe()` to execute raw migrations guarantees execution.
+- **Component Reusability**: Extracting `buildProblemUrl` to a shared utility eliminates duplication across the main problem catalog, admin tables, and dashboard POTD cards.

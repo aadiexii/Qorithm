@@ -4,26 +4,25 @@
 Qorithm is a SaaS workspace for organizing competitive programming problems, topics, and structured study sheets.
 
 ## Current State & Goal
-The platform provides a dual-workflow environment: a `sheet-first` path for structured, curated learning tracks, and a `problems-first` path for open catalog filtering. The current goal is to refine the public-read UX and harden the admin-only content operations model.
+The platform provides a dual-workflow environment: a `sheet-first` path for structured, curated learning tracks, and a `problems-first` path for open catalog filtering. The current goal is to provide a highly engaging user dashboard (with personalized POTD streaks and progress tracking) and a robust, analytics-driven admin console.
 
 ## Primary User
-Competitive programmers who want a clean personal dashboard for tracking problems and algorithm mastery across curated tracks.
+Competitive programmers who want a clean personal dashboard for tracking problems, maintaining daily streaks, and mastering algorithms across curated tracks via automated platform sync.
 
 ## Core Workflows
 1. **Public Browse**: Unauthenticated users can freely browse published problems and view the structure of curated sheets.
 2. **Auth-Gated Interaction**: Users must sign in to mutate state (bookmark problems, change completion status). Interactions seamlessly trigger an inline auth-gate to prevent data loss.
-3. **Admin Content Ops**: Dedicated users with the `admin` role manage the entire catalog (problems, topics, sheet mappings, bulk CSV imports) exclusively from protected `/admin` routes.
+3. **Automated Sync**: Users connect Codeforces and AtCoder handles to automatically sync their solved problems and maintain their daily streak.
+4. **Admin Content Ops**: Dedicated users with the `admin` role manage the entire catalog (problems, topics, sheet mappings, bulk CSV imports), view system KPIs, and monitor user activity exclusively from protected `/admin` routes.
 
 ## Current Capabilities
 - Clerk-based authentication synced with a local Drizzle database.
-- Interactive problem catalog with multi-dimensional filtering (topic, rating, platform).
-- Real-time progress tracking and deterministic dashboard metrics.
-- Seamless admin interface for scalable sheet mapping and user management (with pagination and server-side search).
+- Interactive problem catalog filtered by search and rating (simplified interface).
+- Dashboard focused on recent activity, solved problems, and a personalized Daily Challenge (POTD) and streak tracking.
+- Automated API integrations for Codeforces and AtCoder to synchronize user problem states.
+- Seamless admin interface for scalable sheet mapping, user management, and platform analytics with a KPI-first design.
 - V3 Minimal Educational landing page.
 
 ## Out Of Scope / Later
-- Algorithmic streak generation (currently returning stable fallbacks).
 - Global leaderboard features.
-- Deep Codeforces OAuth integration.
 - Collaboration and teams.
-

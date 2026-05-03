@@ -5,6 +5,8 @@ import { PaginationControls } from "@/features/problems/components/pagination-co
 import { ProblemsFilterBar } from "@/features/problems/components/problems-filter-bar";
 import { ProblemsTable } from "@/features/problems/components/problems-table";
 import { getUserProblemStateMap } from "@/features/tracking/actions";
+import { getTodayChallenge } from "@/features/dashboard/potd-actions";
+import { PotdBanner } from "@/features/dashboard/components/potd-banner";
 
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -21,7 +23,10 @@ export default async function ProblemsPage({ searchParams }: Props) {
     typeof params.maxRating === "string" ? Number(params.maxRating) || undefined : undefined;
   const page = typeof params.page === "string" ? Number(params.page) || 1 : 1;
 
-  const result = await queryProblems({ q, minRating, maxRating, page, pageSize: 10 });
+  const [result, potd] = await Promise.all([
+    queryProblems({ q, minRating, maxRating, page, pageSize: 10 }),
+    getTodayChallenge()
+  ]);
 
   // Fetch user tracking state for visible problems
   const problemIds = result.items.map((p) => p.id);
@@ -38,6 +43,8 @@ export default async function ProblemsPage({ searchParams }: Props) {
           Browse and filter curated competitive programming problems by difficulty and source.
         </p>
       </div>
+
+      <PotdBanner potdTitle={potd?.title} isSolved={potd?.status === "completed"} />
 
       <Suspense fallback={null}>
         <ProblemsFilterBar />

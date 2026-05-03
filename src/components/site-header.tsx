@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { Menu, LayoutDashboard } from "lucide-react";
+import { Menu, LayoutDashboard, Lock } from "lucide-react";
 import { getCurrentSession } from "@/server/auth";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -39,15 +39,24 @@ export async function SiteHeader() {
                       {label}
                     </Link>
                   ))}
-                  {isAuthenticated && (
-                    <Link href="/dashboard" className="flex items-center gap-2 py-2 text-lg font-medium transition-colors hover:text-accent">
-                      <LayoutDashboard className="h-5 w-5" /> Dashboard
-                    </Link>
-                  )}
-                  {isAuthenticated && (
-                    <Link href="/settings" className="flex items-center gap-2 py-2 text-lg font-medium transition-colors hover:text-accent">
-                      Settings
-                    </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <Link href="/dashboard" className="flex items-center gap-2 py-2 text-lg font-medium transition-colors hover:text-accent">
+                        <LayoutDashboard className="h-5 w-5" /> Dashboard
+                      </Link>
+                      <Link href="/settings" className="flex items-center gap-2 py-2 text-lg font-medium transition-colors hover:text-accent">
+                        Settings
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/sign-in" className="flex items-center gap-2 py-2 text-lg font-medium transition-colors text-muted-foreground opacity-60 hover:opacity-100 cursor-pointer">
+                        Dashboard <Lock className="h-4 w-4 ml-auto" />
+                      </Link>
+                      <Link href="/sign-in" className="flex items-center gap-2 py-2 text-lg font-medium transition-colors text-muted-foreground opacity-60 hover:opacity-100 cursor-pointer">
+                        Settings <Lock className="h-4 w-4 ml-auto" />
+                      </Link>
+                    </>
                   )}
                   {isAdmin && (
                     <Link href="/admin" className="flex items-center gap-2 py-2 text-lg font-medium text-accent transition-colors">
@@ -70,15 +79,24 @@ export async function SiteHeader() {
                 {label}
               </Link>
             ))}
-            {isAuthenticated && (
-              <Link href="/dashboard" className="text-sm font-medium transition-colors text-muted-foreground hover:text-foreground">
-                Dashboard
-              </Link>
-            )}
-            {isAuthenticated && (
-              <Link href="/settings" className="text-sm font-medium transition-colors text-muted-foreground hover:text-foreground">
-                Settings
-              </Link>
+            {isAuthenticated ? (
+              <>
+                <Link href="/dashboard" className="text-sm font-medium transition-colors text-muted-foreground hover:text-foreground">
+                  Dashboard
+                </Link>
+                <Link href="/settings" className="text-sm font-medium transition-colors text-muted-foreground hover:text-foreground">
+                  Settings
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/sign-in" className="flex items-center gap-1.5 text-sm font-medium transition-colors text-muted-foreground opacity-60 blur-[0.5px] hover:blur-none hover:opacity-100 cursor-pointer" title="Sign in required">
+                  Dashboard <Lock className="h-3 w-3" />
+                </Link>
+                <Link href="/sign-in" className="flex items-center gap-1.5 text-sm font-medium transition-colors text-muted-foreground opacity-60 blur-[0.5px] hover:blur-none hover:opacity-100 cursor-pointer" title="Sign in required">
+                  Settings <Lock className="h-3 w-3" />
+                </Link>
+              </>
             )}
             {isAdmin && (
               <Link href="/admin" className="text-sm font-medium text-accent transition-colors hover:text-accent/80">

@@ -1,4 +1,4 @@
-﻿import { config } from "dotenv";
+import { config } from "dotenv";
 config({ path: ".env.local" });
 import { drizzle } from "drizzle-orm/postgres-js";
 import { eq, and } from "drizzle-orm";
@@ -20,20 +20,20 @@ const db = drizzle(client, { schema });
 // ---------------------------------------------------------------------------
 
 const TOPICS = [
-  { slug: "arrays", name: "Arrays" },
+  { slug: "arrays", name: "Array Foundations" },
   { slug: "hash-map", name: "Hash Map" },
   { slug: "strings", name: "Strings" },
   { slug: "math", name: "Math" },
-  { slug: "sorting", name: "Sorting" },
-  { slug: "greedy", name: "Greedy" },
-  { slug: "dynamic-programming", name: "Dynamic Programming" },
-  { slug: "binary-search", name: "Binary Search" },
-  { slug: "graphs", name: "Graphs" },
-  { slug: "trees", name: "Trees" },
+  { slug: "sorting", name: "Ordering Strategies" },
+  { slug: "greedy", name: "Greedy Decisions" },
+  { slug: "dynamic-programming", name: "State Transition Basics" },
+  { slug: "binary-search", name: "Binary Search Precision" },
+  { slug: "graphs", name: "Graph Traversal Core" },
+  { slug: "trees", name: "Tree Reasoning" },
   { slug: "simulation", name: "Simulation" },
   { slug: "number-theory", name: "Number Theory" },
   { slug: "geometry", name: "Geometry" },
-  { slug: "two-pointers", name: "Two Pointers" },
+  { slug: "two-pointers", name: "Pointer Control" },
   { slug: "stack", name: "Stack" },
 ];
 
@@ -51,19 +51,19 @@ const SHEET_SECTIONS: {
   { slug: "cpp-stl", title: "C++ STL", description: "Standard Template Library containers, iterators, and algorithms.", sortOrder: 2 },
   { slug: "math-for-beginners", title: "Math for Beginners", description: "Number properties, modular arithmetic, and basic combinatorics.", sortOrder: 3 },
   { slug: "codeforces-a-grind", title: "Codeforces Problem A Grind", description: "High-volume practice on Codeforces Div. 2 A-level problems.", sortOrder: 4 },
-  { slug: "greedy-algorithms", title: "Greedy Algorithms", description: "Exchange arguments, greedy choice property, and interval scheduling.", sortOrder: 5 },
-  { slug: "recursion-and-backtracking", title: "Recursion and Backtracking", description: "Recursive thinking, call stacks, pruning, and constraint satisfaction.", sortOrder: 6 },
-  { slug: "bit-manipulation", title: "Bit Manipulation", description: "Bitwise operators, bitmasks, and bit tricks for competitive programming.", sortOrder: 7 },
-  { slug: "prefix-sums-and-difference-array", title: "Prefix Sums and Difference Array", description: "Range sum queries and efficient range update techniques.", sortOrder: 8 },
+  { slug: "greedy-algorithms", title: "Greedy Decisions", description: "Builds optimal local-choice intuition to solve interval scheduling and exchange argument challenges.", sortOrder: 5 },
+  { slug: "recursion-and-backtracking", title: "Recursive Exploration", description: "Builds recursive state modeling skills to handle complex constraint satisfaction problems.", sortOrder: 6 },
+  { slug: "bit-manipulation", title: "Bitwise Toolkit", description: "Builds bit-level manipulation fluency to solve memory-efficient subset and bitmask problems.", sortOrder: 7 },
+  { slug: "prefix-sums-and-difference-array", title: "Range Sum Patterns", description: "Builds constant-time range querying skills to handle rapid interval updates.", sortOrder: 8 },
   { slug: "constructive-algorithms", title: "Constructive Algorithms", description: "Building explicit constructions and proving existence of solutions.", sortOrder: 9 },
   { slug: "codeforces-b-grind", title: "Codeforces Problem B Grind", description: "High-volume practice on Codeforces Div. 2 B-level problems.", sortOrder: 10 },
-  { slug: "binary-search", title: "Binary Search", description: "Binary search on answer, search space reduction, and monotone predicates.", sortOrder: 11 },
-  { slug: "two-pointers", title: "Two Pointers", description: "Sliding window and two-pointer techniques for array and string problems.", sortOrder: 12 },
+  { slug: "binary-search", title: "Binary Search Precision", description: "Builds monotonic search space reduction skills to solve 'search on answer' optimization problems.", sortOrder: 11 },
+  { slug: "two-pointers", title: "Pointer Control", description: "Builds array scanning efficiency to solve paired element and sliding window challenges.", sortOrder: 12 },
   { slug: "number-theory", title: "Number Theory", description: "GCD, prime sieve, factorization, and modular inverse.", sortOrder: 13 },
   { slug: "codeforces-c-grind", title: "Codeforces Problem C Grind", description: "High-volume practice on Codeforces Div. 2 C-level problems.", sortOrder: 14 },
   { slug: "interactive-problems", title: "Interactive Problems", description: "Query-based problems with binary search and adaptive strategies.", sortOrder: 15 },
-  { slug: "dp", title: "DP", description: "Dynamic programming from fundamentals to classical patterns.", sortOrder: 16 },
-  { slug: "graphs", title: "Graphs", description: "BFS, DFS, shortest paths, topological sort, and cycle detection.", sortOrder: 17 },
+  { slug: "dp", title: "State Transition Basics", description: "Builds overlapping subproblem recognition to handle optimal path and knapsack-style challenges.", sortOrder: 16 },
+  { slug: "graphs", title: "Graph Traversal Core", description: "Builds network traversal skills to solve shortest path and connectivity detection problems.", sortOrder: 17 },
   { slug: "dsu", title: "DSU", description: "Disjoint Set Union with union by rank and path compression.", sortOrder: 18 },
   { slug: "segment-trees-and-lazy-propagation", title: "Segment Trees and Lazy Propagation", description: "Range query and range update data structures.", sortOrder: 19 },
   { slug: "codeforces-d-grind", title: "Codeforces Problem D Grind", description: "High-volume practice on Codeforces Div. 2 D-level problems.", sortOrder: 20 },
