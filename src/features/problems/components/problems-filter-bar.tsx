@@ -1,23 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import { TopicSelector } from "./topic-selector";
-
-type Topic = {
-  id: string;
-  name: string;
-  usageCount?: number;
-};
-
-type ProblemsFilterBarProps = {
-  topics: Topic[];
-};
 
 const RATING_PRESETS = [
   { label: "800-999", min: 800, max: 999 },
@@ -28,45 +16,22 @@ const RATING_PRESETS = [
   { label: "1900+", min: 1900, max: 3500 },
 ];
 
-const CURATED_QUICK_TOPICS = [
-  "arrays",
-  "two-pointers",
-  "binary-search",
-  "dynamic-programming",
-  "graphs",
-  "greedy",
-  "math",
-  "bitmasks"
-];
-
-export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
+export function ProblemsFilterBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const q = searchParams.get("q") ?? "";
-  const topic = searchParams.get("topic") ?? "";
   const minRating = searchParams.get("minRating") ?? "";
   const maxRating = searchParams.get("maxRating") ?? "";
-
-  const [localTopic, setLocalTopic] = useState(topic);
-
-  // Sync local state if URL changes
-  useEffect(() => {
-    setLocalTopic(topic);
-  }, [topic]);
-
-  const quickTopics = topics.filter(t => CURATED_QUICK_TOPICS.includes(t.name.toLowerCase().replace(/\s+/g, '-')) && (t.usageCount ?? 0) > 0);
 
   const applyFilters = useCallback(
     (formData: FormData) => {
       const params = new URLSearchParams();
       const qVal = formData.get("q")?.toString().trim();
-      const topicVal = localTopic;
       const minVal = formData.get("minRating")?.toString().trim();
       const maxVal = formData.get("maxRating")?.toString().trim();
 
       if (qVal) params.set("q", qVal);
-      if (topicVal) params.set("topic", topicVal);
       if (minVal) params.set("minRating", minVal);
       if (maxVal) params.set("maxRating", maxVal);
       // Reset to page 1 when filters change
@@ -84,19 +49,8 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
   function applyPreset(min: number, max: number) {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
-    if (topic) params.set("topic", topic);
     params.set("minRating", min.toString());
     params.set("maxRating", max.toString());
-    params.set("page", "1");
-    router.push(`/problems?${params.toString()}`);
-  }
-
-  function applyQuickTopic(topicId: string) {
-    const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (topic !== topicId) params.set("topic", topicId);
-    if (minRating) params.set("minRating", minRating);
-    if (maxRating) params.set("maxRating", maxRating);
     params.set("page", "1");
     router.push(`/problems?${params.toString()}`);
   }
@@ -114,20 +68,6 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
             placeholder="Title or source…"
             defaultValue={q}
             className="h-9 w-44"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <Label className="text-xs">
-            Topic
-          </Label>
-          <TopicSelector
-            topics={topics}
-            value={localTopic}
-            onChange={(val) => {
-              setLocalTopic(val);
-              // We could auto-submit here, but standard behavior is waiting for Apply or just using quick topics
-            }}
           />
         </div>
 
@@ -172,29 +112,6 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
       </form>
 
       <div className="flex flex-col gap-3 pt-2">
-        {quickTopics.length > 0 && (
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            <span className="mr-1 text-xs font-medium text-muted-foreground">Topics:</span>
-            {quickTopics.map((t) => {
-              const isActive = localTopic === t.id;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => applyQuickTopic(t.id)}
-                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border"
-                  }`}
-                >
-                  {t.name}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         <span className="mr-1 text-xs font-medium text-muted-foreground">Presets:</span>
         {RATING_PRESETS.map((preset) => {

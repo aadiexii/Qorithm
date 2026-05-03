@@ -20,7 +20,6 @@ export type ActionState = {
 
 export type ProblemsFilter = {
   q?: string;
-  topic?: string;
   minRating?: number;
   maxRating?: number;
   page?: number;
@@ -65,17 +64,6 @@ export async function queryProblems(filters: ProblemsFilter = {}) {
     conditions.push(lte(effectiveRating, filters.maxRating));
   }
 
-  // Topic filter using a robust IN subquery (prevents N+1 and duplicate rows)
-  if (filters.topic) {
-    const { inArray } = await import("drizzle-orm");
-    const subquery = db
-      .select({ problemId: problemTopics.problemId })
-      .from(problemTopics)
-      .where(eq(problemTopics.topicId, filters.topic));
-
-    conditions.push(inArray(problems.id, subquery));
-  }
-
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   const [totalResult] = await db
@@ -88,13 +76,6 @@ export async function queryProblems(filters: ProblemsFilter = {}) {
 
   const items = await db.query.problems.findMany({
     where: whereClause,
-    with: {
-      problemTopics: {
-        with: {
-          topic: true,
-        },
-      },
-    },
     orderBy: [desc(problems.createdAt)],
     limit: pageSize,
     offset,

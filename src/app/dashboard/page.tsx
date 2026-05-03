@@ -26,13 +26,12 @@ export default async function DashboardPage({ searchParams }: Props) {
 
 
   const q = typeof params.q === "string" ? params.q : undefined;
-  const topic = typeof params.topic === "string" ? params.topic : undefined;
   const minRating = typeof params.minRating === "string" ? Number(params.minRating) || undefined : undefined;
   const maxRating = typeof params.maxRating === "string" ? Number(params.maxRating) || undefined : undefined;
   const page = typeof params.page === "string" ? Number(params.page) || 1 : 1;
   const currentTab = typeof params.tab === "string" ? params.tab : "all";
 
-  const result = await queryProblems({ q, topic, minRating, maxRating, page, pageSize: 15 });
+  const result = await queryProblems({ q, minRating, maxRating, page, pageSize: 15 });
 
   const problemIds = result.items.map((p) => p.id);
   const stateMap = await getUserProblemStateMap(problemIds);

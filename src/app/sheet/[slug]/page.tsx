@@ -14,36 +14,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProblemTrackingControls } from "@/features/tracking/components/problem-tracking-controls";
+import { buildProblemUrl } from "@/lib/problem-url";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
-
-function buildProblemUrl(
-  platform: string,
-  contestId: number | null,
-  index: string | null,
-  source: string,
-): string | null {
-  if (platform === "codeforces" && contestId && index) {
-    return `https://codeforces.com/contest/${contestId}/problem/${index}`;
-  }
-  if (platform === "atcoder" && index) {
-    const contestFromSource = /^AtCoder\s+([a-z0-9_]+)$/i.exec(source)?.[1];
-    if (contestFromSource) {
-      return `https://atcoder.jp/contests/${contestFromSource}/tasks/${index}`;
-    }
-  }
-  if (/^https?:\/\//i.test(source)) {
-    return source;
-  }
-  // Simple heuristic for LeetCode from source string like "LeetCode 1"
-  if (platform === "custom" && source.toLowerCase().includes("leetcode")) {
-    // For now, link to LeetCode problemset
-    return "https://leetcode.com/problemset/all/";
-  }
-  return null;
-}
 
 export default async function SheetSectionPage({ params }: Props) {
   const session = await getCurrentSession();
