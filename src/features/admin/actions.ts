@@ -399,3 +399,74 @@ export async function bulkImportAction(csvText: string): Promise<BulkImportResul
     rowErrors,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Analytics (admin only)
+// ---------------------------------------------------------------------------
+
+import { users } from "@/db/schema/auth";
+import { userProblemStates } from "@/db/schema/tracking";
+import { count, gte, inArray, sql } from "drizzle-orm";
+
+export type AdminAnalytics = {
+  totalSignups: number;
+  activeUsers7d: number;
+  activeUsers30d: number;
+  totalAttempted: number;
+  totalSolved: number;
+  completionRate: string;
+};
+
+export async function getAdminAnalytics(): Promise<AdminAnalytics> {
+  const session = await requireAdmin();
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
+
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+  // Signups
+  const [signupsRes] = await db.select({ value: count() }).from(users);
+  const totalSignups = signupsRes?.value ?? 0;
+
+  // Active Users (7d)
+  const [active7dRes] = await db
+    .select({ value: sql<number>`count(distinct ${userProblemStates.userId})` })
+    .from(userProblemStates)
+    .where(gte(userProblemStates.updatedAt, sevenDaysAgo));
+  const activeUsers7d = Number(active7dRes?.value ?? 0);
+
+  // Active Users (30d)
+  const [active30dRes] = await db
+    .select({ value: sql<number>`count(distinct ${userProblemStates.userId})` })
+    .from(userProblemStates)
+    .where(gte(userProblemStates.updatedAt, thirtyDaysAgo));
+  const activeUsers30d = Number(active30dRes?.value ?? 0);
+
+  // Total Attempted (Tried or Solved)
+  const [attemptedRes] = await db
+    .select({ value: count() })
+    .from(userProblemStates)
+    .where(inArray(userProblemStates.status, ["tried", "solved"]));
+  const totalAttempted = attemptedRes?.value ?? 0;
+
+  // Total Solved
+  const [solvedRes] = await db
+    .select({ value: count() })
+    .from(userProblemStates)
+    .where(eq(userProblemStates.status, "solved"));
+  const totalSolved = solvedRes?.value ?? 0;
+
+  const completionRate = totalAttempted > 0 ? ((totalSolved / totalAttempted) * 100).toFixed(1) + "%" : "0.0%";
+
+  return {
+    totalSignups,
+    activeUsers7d,
+    activeUsers30d,
+    totalAttempted,
+    totalSolved,
+    completionRate,
+  };
+}

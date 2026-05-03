@@ -1,15 +1,18 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { TopicSelector } from "./topic-selector";
+
 type Topic = {
   id: string;
   name: string;
+  usageCount?: number;
 };
 
 type ProblemsFilterBarProps = {
@@ -25,6 +28,17 @@ const RATING_PRESETS = [
   { label: "1900+", min: 1900, max: 3500 },
 ];
 
+const CURATED_QUICK_TOPICS = [
+  "arrays",
+  "two-pointers",
+  "binary-search",
+  "dynamic-programming",
+  "graphs",
+  "greedy",
+  "math",
+  "bitmasks"
+];
+
 export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -34,11 +48,20 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
   const minRating = searchParams.get("minRating") ?? "";
   const maxRating = searchParams.get("maxRating") ?? "";
 
+  const [localTopic, setLocalTopic] = useState(topic);
+
+  // Sync local state if URL changes
+  useEffect(() => {
+    setLocalTopic(topic);
+  }, [topic]);
+
+  const quickTopics = topics.filter(t => CURATED_QUICK_TOPICS.includes(t.name.toLowerCase().replace(/\s+/g, '-')) && (t.usageCount ?? 0) > 0);
+
   const applyFilters = useCallback(
     (formData: FormData) => {
       const params = new URLSearchParams();
       const qVal = formData.get("q")?.toString().trim();
-      const topicVal = formData.get("topic")?.toString();
+      const topicVal = localTopic;
       const minVal = formData.get("minRating")?.toString().trim();
       const maxVal = formData.get("maxRating")?.toString().trim();
 
@@ -95,22 +118,17 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
         </div>
 
         <div className="space-y-1">
-          <Label htmlFor="filter-topic" className="text-xs">
+          <Label className="text-xs">
             Topic
           </Label>
-          <select
-            id="filter-topic"
-            name="topic"
-            defaultValue={topic}
-            className="flex h-9 w-36 rounded-lg border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value="">All topics</option>
-            {topics.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
+          <TopicSelector
+            topics={topics}
+            value={localTopic}
+            onChange={(val) => {
+              setLocalTopic(val);
+              // We could auto-submit here, but standard behavior is waiting for Apply or just using quick topics
+            }}
+          />
         </div>
 
         <div className="space-y-1">
@@ -154,11 +172,11 @@ export function ProblemsFilterBar({ topics }: ProblemsFilterBarProps) {
       </form>
 
       <div className="flex flex-col gap-3 pt-2">
-        {topics.length > 0 && (
+        {quickTopics.length > 0 && (
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             <span className="mr-1 text-xs font-medium text-muted-foreground">Topics:</span>
-            {topics.slice(0, 6).map((t) => {
-              const isActive = topic === t.id;
+            {quickTopics.map((t) => {
+              const isActive = localTopic === t.id;
               return (
                 <button
                   key={t.id}

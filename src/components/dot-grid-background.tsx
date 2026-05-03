@@ -57,44 +57,38 @@ export function DotGridBackground() {
     window.addEventListener("resize", resize);
     resize();
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       mouse.targetX = e.clientX;
       mouse.targetY = e.clientY;
       if (!mouse.isActive) {
-        // Snap the current mouse position to target on first entry to avoid trailing from old position
         mouse.x = mouse.targetX;
         mouse.y = mouse.targetY;
       }
       mouse.isActive = true;
     };
     
-    const handleMouseLeave = () => {
-      mouse.isActive = false;
-    };
-
-    const handleBlur = () => {
-      mouse.isActive = false;
-    };
+    const setInactive = () => { mouse.isActive = false; };
 
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        mouse.isActive = false;
-        // Hard reset guardrail on tab change
-        for (const dot of dots) {
-          dot.x = dot.baseX;
-          dot.y = dot.baseY;
-        }
-      }
+      if (document.hidden) setInactive();
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseleave", handleMouseLeave);
-    window.addEventListener("blur", handleBlur);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerleave", setInactive);
+    window.addEventListener("pointercancel", setInactive);
+    window.addEventListener("blur", setInactive);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let lastTime = performance.now();
 
-    const draw = () => {
+    const draw = (currentTime: number) => {
+      const dt = currentTime - lastTime;
+      lastTime = currentTime;
+
+      // If more than 100ms passed (e.g., tab was inactive or window suspended), snap to base
+      const shouldSnap = dt > 100;
+
       time += 0.005; // Animation speed
       
       // Smooth mouse follow
@@ -152,14 +146,19 @@ export function DotGridBackground() {
           radius *= 1.2;
         }
 
-        // Smooth return behavior
-        dot.x += (targetX - dot.x) * 0.15;
-        dot.y += (targetY - dot.y) * 0.15;
-
-        // Hard reset guardrail: fix anomalous drift
-        if (Math.abs(dot.x - targetX) > 100 || Math.abs(dot.y - targetY) > 100) {
+        if (shouldSnap) {
           dot.x = targetX;
           dot.y = targetY;
+        } else {
+          // Smooth return behavior
+          dot.x += (targetX - dot.x) * 0.15;
+          dot.y += (targetY - dot.y) * 0.15;
+
+          // Hard reset guardrail: fix anomalous drift
+          if (Math.abs(dot.x - targetX) > 100 || Math.abs(dot.y - targetY) > 100) {
+            dot.x = targetX;
+            dot.y = targetY;
+          }
         }
 
         ctx.beginPath();
@@ -194,13 +193,14 @@ export function DotGridBackground() {
       animationFrameId = requestAnimationFrame(draw);
     };
 
-    draw();
+    animationFrameId = requestAnimationFrame(draw);
 
     return () => {
       window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
-      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerleave", setInactive);
+      window.removeEventListener("pointercancel", setInactive);
+      window.removeEventListener("blur", setInactive);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       cancelAnimationFrame(animationFrameId);
     };
