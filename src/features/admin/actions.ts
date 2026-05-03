@@ -406,7 +406,7 @@ export async function bulkImportAction(csvText: string): Promise<BulkImportResul
 
 import { users } from "@/db/schema/auth";
 import { userProblemStates } from "@/db/schema/tracking";
-import { count, gte, inArray, sql } from "drizzle-orm";
+import { count, gte, inArray, sql, and, lte } from "drizzle-orm";
 
 export type AdminAnalytics = {
   totalSignups: number;
@@ -415,7 +415,17 @@ export type AdminAnalytics = {
   totalAttempted: number;
   totalSolved: number;
   completionRate: string;
+  // Trends
+  signups7d: number;
+  signupsTrend: number; // percentage change
+  solves7d: number;
+  solvesTrend: number; // percentage change
 };
+
+function calculateTrend(current: number, previous: number): number {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return ((current - previous) / previous) * 100;
+}
 
 export async function getAdminAnalytics(): Promise<AdminAnalytics> {
   const session = await requireAdmin();
@@ -425,11 +435,23 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
 
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
   // Signups
   const [signupsRes] = await db.select({ value: count() }).from(users);
   const totalSignups = signupsRes?.value ?? 0;
+
+  // Signups 7d
+  const [signups7dRes] = await db.select({ value: count() }).from(users).where(gte(users.createdAt, sevenDaysAgo));
+  const signups7d = signups7dRes?.value ?? 0;
+
+  // Signups previous 7d
+  const [signupsPrev7dRes] = await db.select({ value: count() }).from(users)
+    .where(and(gte(users.createdAt, fourteenDaysAgo), lte(users.createdAt, sevenDaysAgo)));
+  const signupsPrev7d = signupsPrev7dRes?.value ?? 0;
+
+  const signupsTrend = calculateTrend(signups7d, signupsPrev7d);
 
   // Active Users (7d)
   const [active7dRes] = await db
@@ -459,6 +481,22 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
     .where(eq(userProblemStates.status, "solved"));
   const totalSolved = solvedRes?.value ?? 0;
 
+  // Solves 7d
+  const [solves7dRes] = await db.select({ value: count() }).from(userProblemStates)
+    .where(and(eq(userProblemStates.status, "solved"), gte(userProblemStates.updatedAt, sevenDaysAgo)));
+  const solves7d = solves7dRes?.value ?? 0;
+
+  // Solves previous 7d
+  const [solvesPrev7dRes] = await db.select({ value: count() }).from(userProblemStates)
+    .where(and(
+      eq(userProblemStates.status, "solved"),
+      gte(userProblemStates.updatedAt, fourteenDaysAgo),
+      lte(userProblemStates.updatedAt, sevenDaysAgo)
+    ));
+  const solvesPrev7d = solvesPrev7dRes?.value ?? 0;
+
+  const solvesTrend = calculateTrend(solves7d, solvesPrev7d);
+
   const completionRate = totalAttempted > 0 ? ((totalSolved / totalAttempted) * 100).toFixed(1) + "%" : "0.0%";
 
   return {
@@ -468,5 +506,9 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
     totalAttempted,
     totalSolved,
     completionRate,
+    signups7d,
+    signupsTrend,
+    solves7d,
+    solvesTrend,
   };
 }

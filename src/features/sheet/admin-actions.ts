@@ -10,7 +10,28 @@ import { requireAdmin } from "@/server/auth";
 
 export async function listSectionsForAdmin() {
   await requireAdmin();
-  return db.select().from(sheetSections).orderBy(asc(sheetSections.sortOrder));
+  
+  const results = await db.execute(sql`
+    SELECT 
+      s.id, s.title, s.description, s.sort_order as "sortOrder", s.is_published as "isPublished",
+      COUNT(p.problem_id) as "problemCount"
+    FROM ${sheetSections} s
+    LEFT JOIN ${sheetSectionProblems} p ON s.id = p.section_id
+    GROUP BY s.id
+    ORDER BY s.sort_order ASC
+  `);
+
+  return results.map((row) => {
+    const r = row as Record<string, unknown>;
+    return {
+      id: r.id as string,
+      title: r.title as string,
+      description: r.description as string | null,
+      sortOrder: r.sortOrder as number,
+      isPublished: r.isPublished as boolean,
+      problemCount: Number(r.problemCount ?? 0),
+    };
+  });
 }
 
 export async function searchProblemsForMapping(query: string = "") {

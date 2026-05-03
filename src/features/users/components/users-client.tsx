@@ -81,14 +81,16 @@ export function UsersClient({ result }: { result: ListUsersResult }) {
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Joined</TableHead>
-                <TableHead>Codeforces</TableHead>
-                <TableHead className="w-32">Role</TableHead>
+                <TableHead>Last Active</TableHead>
+                <TableHead className="text-right">Solved</TableHead>
+                <TableHead className="text-right">Attempted</TableHead>
+                <TableHead className="w-32 text-right">Role</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {result.items.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                     No users found.
                   </TableCell>
                 </TableRow>
@@ -96,23 +98,35 @@ export function UsersClient({ result }: { result: ListUsersResult }) {
                 result.items.map((user) => (
                   <TableRow key={user.id} className={isPending ? "opacity-50 pointer-events-none" : ""}>
                     <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                    <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
                       {new Intl.DateTimeFormat("en-US", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
                       }).format(new Date(user.createdAt))}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {user.codeforcesHandle ?? "-"}
+                    <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
+                      {user.lastActive
+                        ? new Intl.DateTimeFormat("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }).format(new Date(user.lastActive))
+                        : "-"}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-right font-medium text-emerald-500">
+                      {user.totalSolved}
+                    </TableCell>
+                    <TableCell className="text-right font-medium text-muted-foreground">
+                      {user.totalAttempted}
+                    </TableCell>
+                    <TableCell className="text-right">
                       <select
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value as "user" | "admin")}
                         disabled={isPending}
-                        className="h-8 rounded border bg-background px-2 text-sm"
+                        className="h-8 w-full rounded border border-border bg-background px-2 text-xs font-medium"
                       >
                         <option value="user">User</option>
                         <option value="admin">Admin</option>

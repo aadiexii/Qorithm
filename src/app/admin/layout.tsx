@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { requireAdmin } from "@/server/auth";
+import { AdminNav } from "./admin-nav";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await requireAdmin();
@@ -10,25 +11,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-12">
-      <div className="flex items-center gap-6 border-b border-border pb-4 text-sm text-muted-foreground">
-        <a href="/admin/problems" className="transition hover:text-foreground">
-          Problems
-        </a>
-        <a href="/admin/topics" className="transition hover:text-foreground">
-          Topics
-        </a>
-        <a href="/admin/sheet" className="transition hover:text-foreground">
-          Sheet
-        </a>
-        <a href="/admin/users" className="transition hover:text-foreground">
-          Users
-        </a>
-        <a href="/admin/import" className="transition hover:text-foreground">
-          Import
-        </a>
+    <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
+      <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
+        {/* Sidebar for Desktop, Top nav for mobile */}
+        <aside className="w-full lg:w-48 lg:shrink-0">
+          <AdminNav />
+        </aside>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-hidden">
+          {children}
+        </main>
       </div>
-      {children}
     </div>
   );
 }

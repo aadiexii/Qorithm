@@ -64,7 +64,15 @@ export function TopicsTable({ topics }: TopicsTableProps) {
                       <TableCell className="font-mono text-sm text-muted-foreground">
                         {topic.slug}
                       </TableCell>
-                      <TableCell className="text-right">{topic.usageCount}</TableCell>
+                      <TableCell className="text-right">
+                        {topic.usageCount === 0 ? (
+                          <span className="rounded bg-rose-500/20 px-2 py-0.5 text-xs font-bold text-rose-500" title="Unused topic">
+                            {topic.usageCount}
+                          </span>
+                        ) : (
+                          topic.usageCount
+                        )}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           <Button

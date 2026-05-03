@@ -22,6 +22,7 @@ type ProblemRow = {
   platform: "custom" | "codeforces" | "atcoder";
   externalContestId: number | null;
   externalProblemIndex: string | null;
+  externalDifficulty?: number | null;
   isPublished: boolean;
   problemTopics: { topicId: string; topic: { name: string } }[];
 };
@@ -76,7 +77,19 @@ export function AdminProblemsTable({ problems }: { problems: ProblemRow[] }) {
                 {problems.map((p) => (
                   <TableRow key={p.id}>
                     <TableCell className="font-medium">
-                      <div>{p.title}</div>
+                      <div className="flex items-center gap-2">
+                        {p.title}
+                        {p.isPublished && (
+                          <div className="flex gap-1">
+                            {!p.rating && !p.externalDifficulty && (
+                              <span className="rounded bg-rose-500/20 px-1.5 py-0.5 text-[10px] font-bold text-rose-500" title="Missing Rating">No Rating</span>
+                            )}
+                            {p.problemTopics.length === 0 && (
+                              <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-500" title="Missing Topics">No Topics</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                       <div className="text-xs text-muted-foreground">{p.source}</div>
                       {p.platform !== "custom" && p.externalContestId && (
                         <div className="text-xs text-muted-foreground">

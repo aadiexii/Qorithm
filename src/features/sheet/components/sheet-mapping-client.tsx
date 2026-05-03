@@ -22,7 +22,7 @@ import {
   moveProblemOrder,
 } from "../admin-actions";
 
-type Section = { id: string; title: string; slug: string };
+type Section = { id: string; title: string; description: string | null; sortOrder: number; isPublished: boolean; problemCount: number };
 type MappedProblem = Awaited<ReturnType<typeof getSectionMappings>>[0];
 type SearchProblem = Awaited<ReturnType<typeof searchProblemsForMapping>>[0];
 
@@ -101,13 +101,26 @@ export function SheetMappingClient({ sections }: { sections: Section[] }) {
               <button
                 key={section.id}
                 onClick={() => setActiveSectionId(section.id)}
-                className={`text-left px-4 py-3 text-sm transition-colors border-l-2 ${
+                className={`text-left px-4 py-3 text-sm transition-colors border-l-2 flex flex-col gap-1 ${
                   activeSectionId === section.id
-                    ? "border-accent bg-accent/10 font-semibold text-accent"
+                    ? "border-accent bg-accent/10 text-accent"
                     : "border-transparent hover:bg-white/5 text-muted-foreground"
                 }`}
               >
-                {section.title}
+                <div className="flex items-center justify-between w-full">
+                  <span className={activeSectionId === section.id ? "font-semibold" : "font-medium"}>
+                    {section.title}
+                  </span>
+                  {!section.isPublished && (
+                    <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-500">Draft</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span>{section.problemCount} problems</span>
+                  {section.problemCount === 0 && (
+                    <span className="rounded bg-rose-500/20 px-1.5 py-0.5 text-[10px] font-bold text-rose-500">Empty</span>
+                  )}
+                </div>
               </button>
             ))}
           </div>
