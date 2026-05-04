@@ -67,6 +67,16 @@ async function main() {
       );
     `;
 
+    await sql`
+      CREATE INDEX IF NOT EXISTS "user_problem_states_status_solved_at_idx" 
+      ON "user_problem_states" ("status", "solved_at");
+    `;
+
+    await sql`
+      CREATE INDEX IF NOT EXISTS "user_problem_states_user_status_idx" 
+      ON "user_problem_states" ("user_id", "status");
+    `;
+
     console.log("Schema applied successfully.");
   } catch (error) {
     console.error("Error applying schema:", error);

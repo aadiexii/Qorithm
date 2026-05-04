@@ -28,6 +28,9 @@ export const userProblemStates = pgTable(
       table.problemId,
     ),
     userIdIdx: index("user_problem_states_user_id_idx").on(table.userId),
+    // Performance indices for leaderboard aggregations
+    statusSolvedAtIdx: index("user_problem_states_status_solved_at_idx").on(table.status, table.solvedAt),
+    userStatusIdx: index("user_problem_states_user_status_idx").on(table.userId, table.status),
   }),
 );
 

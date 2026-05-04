@@ -29,11 +29,11 @@ type StreakInfo = {
 export function PotdCard({
   potd,
   streak,
-  cfConnected,
+  isDailyEligible,
 }: {
   potd: POTD | null;
   streak: StreakInfo;
-  cfConnected: boolean;
+  isDailyEligible: boolean;
 }) {
   const [timeLeft, setTimeLeft] = useState<string>("");
 
@@ -62,18 +62,18 @@ export function PotdCard({
             <CalendarClock className="h-5 w-5 text-accent" /> Daily Challenge
           </CardTitle>
           <CardDescription>
-            {cfConnected
-              ? "No suitable problems found. Keep solving on Codeforces!"
-              : "Connect Codeforces to unlock your personalized Daily Challenge."}
+            {isDailyEligible
+              ? "No suitable problems found. Keep solving!"
+              : "Connect Codeforces and AtCoder to unlock your personalized daily problem."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {!cfConnected && (
+          {!isDailyEligible && (
             <Link
               href="/settings"
               className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-accent-foreground shadow hover:bg-accent/90 transition-colors cursor-pointer"
             >
-              <Zap className="h-4 w-4" /> Connect Codeforces
+              <Zap className="h-4 w-4" /> Connect Platforms
             </Link>
           )}
         </CardContent>

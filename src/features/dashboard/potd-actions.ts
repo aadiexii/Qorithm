@@ -13,14 +13,19 @@ export async function getTodayChallenge() {
   const session = await getCurrentSession();
   if (!session) return null;
 
-  // Strictly gate on Codeforces connection
+  // Strictly gate on both Codeforces and AtCoder connections
   const [userRecord] = await db
-    .select({ codeforcesHandle: users.codeforcesHandle })
+    .select({ 
+      codeforcesHandle: users.codeforcesHandle,
+      atcoderHandle: users.atcoderHandle 
+    })
     .from(users)
     .where(eq(users.id, session.user.id));
 
-  if (!userRecord?.codeforcesHandle) {
-    // Codeforces not connected — no POTD assigned
+  const isDailyEligible = Boolean(userRecord?.codeforcesHandle && userRecord?.atcoderHandle);
+
+  if (!isDailyEligible) {
+    // Missing one or both handles — no POTD assigned
     return null;
   }
 
