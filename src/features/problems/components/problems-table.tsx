@@ -74,7 +74,6 @@ export function ProblemsTable({
                         problemId={problem.id}
                         status={state?.status ?? "not_started"}
                         bookmarked={state?.bookmarked ?? false}
-                        note={state?.note ?? null}
                       />
                     </TableCell>
                     <TableCell className="font-medium text-foreground">

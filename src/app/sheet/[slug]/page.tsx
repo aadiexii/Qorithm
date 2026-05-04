@@ -125,7 +125,6 @@ export default async function SheetSectionPage({ params }: Props) {
                           problemId={problem.problemId}
                           status={problem.status}
                           bookmarked={problem.bookmarked}
-                          note={problem.note}
                         />
                       </TableCell>
                       <TableCell className="font-medium text-white">

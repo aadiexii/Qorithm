@@ -37,10 +37,10 @@ export function SolveHeatmap({ data }: { data: HeatmapData[] }) {
   // Calculate intensity based on solves
   const getIntensityClass = (count: number) => {
     if (count === 0) return "bg-white/5 border border-white/10";
-    if (count === 1) return "bg-emerald-900/60 border border-emerald-800/50";
-    if (count <= 3) return "bg-emerald-700/80 border border-emerald-600/50";
+    if (count === 1) return "bg-emerald-900 border border-emerald-800/50";
+    if (count <= 3) return "bg-emerald-700 border border-emerald-600/50";
     if (count <= 5) return "bg-emerald-500 border border-emerald-400";
-    return "bg-emerald-400 border border-emerald-300 shadow-[0_0_10px_rgba(52,211,153,0.5)]";
+    return "bg-emerald-400 border border-emerald-300 shadow-[0_0_8px_rgba(52,211,153,0.4)]";
   };
 
   return (
@@ -51,26 +51,27 @@ export function SolveHeatmap({ data }: { data: HeatmapData[] }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {/* We use a flex layout that wraps for responsiveness, or a grid */}
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-1 flex-wrap">
-            {daysArray.map((day) => (
-              <div
-                key={day.date}
-                title={`${day.count} solves on ${day.date}`}
-                className={`w-3 h-3 rounded-sm transition-colors hover:ring-2 hover:ring-emerald-500/50 hover:ring-offset-1 hover:ring-offset-background ${getIntensityClass(
-                  day.count
-                )}`}
-              />
-            ))}
+        <div className="flex flex-col gap-3">
+          <div className="overflow-x-auto pb-2 -mx-2 px-2">
+            <div className="grid grid-flow-col grid-rows-7 gap-1.5 w-max">
+              {daysArray.map((day) => (
+                <div
+                  key={day.date}
+                  title={`${day.count} solve${day.count === 1 ? '' : 's'} on ${day.date}`}
+                  className={`w-3.5 h-3.5 rounded-sm transition-colors hover:ring-2 hover:ring-emerald-500/50 hover:ring-offset-1 hover:ring-offset-background cursor-pointer ${getIntensityClass(
+                    day.count
+                  )}`}
+                />
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground justify-end">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground justify-end">
             <span>Less</span>
-            <div className="w-3 h-3 rounded-sm bg-white/5 border border-white/10" />
-            <div className="w-3 h-3 rounded-sm bg-emerald-900/60 border border-emerald-800/50" />
-            <div className="w-3 h-3 rounded-sm bg-emerald-700/80 border border-emerald-600/50" />
-            <div className="w-3 h-3 rounded-sm bg-emerald-500 border border-emerald-400" />
-            <div className="w-3 h-3 rounded-sm bg-emerald-400 border border-emerald-300" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-white/5 border border-white/10" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-emerald-900 border border-emerald-800/50" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-emerald-700 border border-emerald-600/50" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-emerald-500 border border-emerald-400" />
+            <div className="w-3.5 h-3.5 rounded-sm bg-emerald-400 border border-emerald-300 shadow-[0_0_8px_rgba(52,211,153,0.4)]" />
             <span>More</span>
           </div>
         </div>

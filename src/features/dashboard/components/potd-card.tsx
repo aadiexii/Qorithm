@@ -71,7 +71,7 @@ export function PotdCard({
           {!cfConnected && (
             <Link
               href="/settings"
-              className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-accent-foreground shadow hover:bg-accent/90 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-accent-foreground shadow hover:bg-accent/90 transition-colors cursor-pointer"
             >
               <Zap className="h-4 w-4" /> Connect Codeforces
             </Link>
@@ -100,10 +100,10 @@ export function PotdCard({
             </CardDescription>
           </div>
           
-          <div className="flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-sm font-semibold border border-white/10 shadow-sm">
-            <Flame className={`h-4 w-4 ${streak.currentStreak > 0 ? "text-orange-500" : "text-muted-foreground"}`} />
-            <span className={streak.currentStreak > 0 ? "text-white" : "text-muted-foreground"}>
-              {streak.currentStreak}
+          <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold border shadow-sm ${streak.currentStreak > 0 ? "bg-orange-500/10 border-orange-500/30 text-orange-400" : "bg-white/5 border-white/10 text-muted-foreground"}`}>
+            <Flame className={`h-4 w-4 ${streak.currentStreak > 0 ? "text-orange-500 fill-orange-500/20" : "text-muted-foreground"}`} />
+            <span>
+              {streak.currentStreak} Day Streak
             </span>
           </div>
         </div>
