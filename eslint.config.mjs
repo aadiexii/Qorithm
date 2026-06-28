@@ -7,7 +7,13 @@ export default [
   ...ts.configs.recommended,
   prettier,
   {
-    ignores: [".next/", "drizzle/", "node_modules/", "tailwind.config.ts", "postcss.config.mjs"],
+    ignores: [
+      ".next/",
+      "drizzle/",
+      "node_modules/",
+      "tailwind.config.ts",
+      "postcss.config.mjs",
+    ],
   },
   {
     files: ["**/*.{ts,tsx}"],

@@ -1,5 +1,5 @@
-import { listUsers } from "@/features/users/admin-actions";
-import { UsersClient } from "@/features/users/components/users-client";
+import { listUsers } from "@/components/actions/user-admin-actions";
+import { UsersClient } from "@/components/users/users-client";
 
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -15,8 +15,10 @@ export default async function AdminUsersPage({ searchParams }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">User Management</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          User Management
+        </h1>
+        <p className="text-muted-foreground text-sm">
           View all registered users and manage their access roles.
         </p>
       </div>

@@ -1,12 +1,26 @@
-import { getAdminAnalytics } from "@/features/admin/actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Activity, CheckCircle, Target, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { getAdminAnalytics } from "@/components/actions/admin-actions";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/molecules/card";
+import {
+  Users,
+  Activity,
+  CheckCircle,
+  Target,
+  ArrowUpRight,
+  ArrowDownRight,
+} from "lucide-react";
 
 function TrendBadge({ trend }: { trend: number }) {
   const isPositive = trend >= 0;
   const Icon = isPositive ? ArrowUpRight : ArrowDownRight;
   return (
-    <div className={`flex items-center gap-1 text-xs font-medium ${isPositive ? "text-emerald-500" : "text-rose-500"}`}>
+    <div
+      className={`flex items-center gap-1 text-xs font-medium ${isPositive ? "text-emerald-500" : "text-rose-500"}`}
+    >
       <Icon className="h-3 w-3" />
       {Math.abs(trend).toFixed(1)}%
     </div>
@@ -30,27 +44,33 @@ export default async function AdminPage() {
         <Card className="border-border/60 bg-card/80">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.totalSignups.toLocaleString()}</div>
-            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">
+              {data.totalSignups.toLocaleString()}
+            </div>
+            <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs">
               <TrendBadge trend={data.signupsTrend} />
               <span>vs previous 7 days ({data.signups7d} new)</span>
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Active Users */}
         <Card className="border-border/60 bg-card/80">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <Activity className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.activeUsers7d.toLocaleString()}</div>
-            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">{data.activeUsers30d.toLocaleString()}</span>
+            <div className="text-2xl font-bold">
+              {data.activeUsers7d.toLocaleString()}
+            </div>
+            <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs">
+              <span className="text-foreground font-medium">
+                {data.activeUsers30d.toLocaleString()}
+              </span>
               <span>active in last 30d</span>
             </div>
           </CardContent>
@@ -60,27 +80,31 @@ export default async function AdminPage() {
         <Card className="border-border/60 bg-card/80">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Solved</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <CheckCircle className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.totalSolved.toLocaleString()}</div>
-            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">
+              {data.totalSolved.toLocaleString()}
+            </div>
+            <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs">
               <TrendBadge trend={data.solvesTrend} />
               <span>vs previous 7 days ({data.solves7d} new)</span>
             </div>
           </CardContent>
         </Card>
 
-        {/* Completion Rate */}
+        {/* Total Solved */}
         <Card className="border-border/60 bg-card/80">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Platform Solve Rate</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Solved</CardTitle>
+            <Target className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.completionRate}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Based on {data.totalAttempted.toLocaleString()} total problem attempts
+            <div className="text-2xl font-bold">
+              {data.totalSolved.toLocaleString()}
+            </div>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Problems solved across all users
             </p>
           </CardContent>
         </Card>

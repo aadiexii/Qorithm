@@ -1,9 +1,13 @@
 import { redirect } from "next/navigation";
 
-import { requireAdmin } from "@/server/auth";
+import { requireAdmin } from "@/services/Auth/auth";
 import { AdminNav } from "./admin-nav";
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await requireAdmin();
 
   if (!session) {
@@ -19,9 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-hidden">
-          {children}
-        </main>
+        <main className="flex-1 overflow-hidden">{children}</main>
       </div>
     </div>
   );

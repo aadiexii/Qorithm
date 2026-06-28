@@ -2,9 +2,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Manrope } from "next/font/google";
 
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/components/site/site-header";
 
-import "./globals.css";
+import "@/styles/globals.css";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -21,16 +21,19 @@ export const metadata: Metadata = {
     template: "%s | Qorithm",
     default: "Qorithm - Master algorithms systematically",
   },
-  description: "A clean SaaS foundation for organizing competitive programming practice.",
+  description:
+    "A clean SaaS foundation for organizing competitive programming practice.",
   openGraph: {
     title: "Qorithm",
-    description: "A clean SaaS foundation for organizing competitive programming practice.",
+    description:
+      "A clean SaaS foundation for organizing competitive programming practice.",
     siteName: "Qorithm",
   },
   twitter: {
     card: "summary_large_image",
     title: "Qorithm",
-    description: "A clean SaaS foundation for organizing competitive programming practice.",
+    description:
+      "A clean SaaS foundation for organizing competitive programming practice.",
   },
 };
 
@@ -42,7 +45,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${manrope.variable} ${jetbrainsMono.variable} antialiased`}>
+        <body
+          className={`${manrope.variable} ${jetbrainsMono.variable} antialiased`}
+        >
           <div className="min-h-screen">
             <SiteHeader />
             <main>{children}</main>

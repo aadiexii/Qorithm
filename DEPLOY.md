@@ -2,46 +2,62 @@
 
 ## Required Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string (Supabase, Neon, etc.) | `postgresql://user:pass@host:5432/cp_sheets` |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk Publishable Key | `pk_test_...` |
-| `CLERK_SECRET_KEY` | Clerk Secret Key | `sk_test_...` |
+| Variable                            | Description                  | Example                                      |
+| ----------------------------------- | ---------------------------- | -------------------------------------------- |
+| `DATABASE_URL`                      | PostgreSQL connection string | `postgresql://user:pass@host:5432/cp_sheets` |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk Publishable Key        | `pk_test_...`                                |
+| `CLERK_SECRET_KEY`                  | Clerk Secret Key             | `sk_test_...`                                |
 
 ## Setup Flow
 
 ### 1. Install dependencies
+
 ```bash
 npm install
 ```
 
 ### 2. Configure environment
+
 ```bash
 cp .env.example .env.local
 # Edit .env.local with your database and Clerk keys
 ```
 
 ### 3. Push schema to database
+
 ```bash
 npm run db:push
-# If using a pooled connection or facing interactive prompts with new tables, apply manually:
-npx tsx scripts/apply_schema.ts
 ```
 
-### 4. Seed starter data (optional but recommended)
+`drizzle.config.ts` loads `.env.local`, uses `src/services/Database/schema/index.ts`, and connects via `DATABASE_URL`.
+
+### 4. Seed starter data (optional)
+
 ```bash
 npm run db:seed
 ```
 
 This seeds:
+
 - 15 topics (arrays, DP, graphs, etc.)
+- 27 starter sheet sections
 - 25 Codeforces problems (real contest IDs for sync demo)
 - 75+ custom problems (LeetCode-style)
 - All problems are published and ready to browse. The script is idempotent.
 
-### 5. Bootstrap first admin user
+### 5. Import curriculum dataset (optional, recommended for full catalog)
 
-Authentication is managed via Clerk, but authorization is managed via the local DB. 
+```bash
+npm run curriculum:build
+npm run curriculum:import
+npm run curriculum:topics:backfill
+```
+
+This flow builds `data/curriculum/sections.csv` and `data/curriculum/problems.csv` from Codeforces and AtCoder sources, imports the expected 30 sections / 930 problems, then backfills `problem_topics` mappings from curriculum tags. If the CSVs are already checked in and current, start at `curriculum:import`.
+
+### 6. Bootstrap first admin user
+
+Authentication is managed via Clerk, but authorization is managed via the local DB.
 After creating an account via the Clerk UI:
 
 ```sql
@@ -50,12 +66,16 @@ UPDATE users SET role = 'admin' WHERE email = 'your-admin@email.com';
 
 This updates the local synchronized user record and grants access to `/admin` routes. There is no self-service admin promotion.
 
-### 6. Run development server
+`src/services/Auth/auth.ts` also auto-promotes emails listed in its `ADMIN_EMAILS` constant when those users sign in.
+
+### 7. Run development server
+
 ```bash
 npm run dev
 ```
 
-### 7. Production build
+### 8. Production build
+
 ```bash
 npm run build
 npm start
@@ -64,43 +84,83 @@ npm start
 ## Database Migrations
 
 For schema changes:
+
 ```bash
 npm run db:generate    # Generate migration SQL
 npm run db:migrate     # Apply migrations
 # OR
 npm run db:push        # Push schema directly (dev/staging)
-# Fallback for manual schema application:
-npx tsx scripts/apply_schema.ts
 ```
 
-> **Security Note:** RLS must remain enabled for all public tables. The application relies on server-side Drizzle bypassing RLS, but direct Supabase API access must remain securely locked to read-only published catalog data.
+Manual recovery utilities:
+
+- `scripts/apply_schema.ts` applies later dashboard/challenge/note columns and tables with raw SQL.
+- `scripts/manual-migration.ts` creates sheet section tables and indexes for legacy databases.
+- `scripts/repair-migration-baseline.ts` repairs the Drizzle migration history table when a database was manually bootstrapped.
+
+Use those scripts only when reconciling an existing database that cannot cleanly run Drizzle migrations.
+
+> **Security Note:** The application does not use a Supabase client or browser-side database access. Authorization is enforced in server code through Clerk session checks, `requireAdmin()`, and Drizzle queries. If the backing Postgres provider is Supabase and RLS is enabled, keep direct Supabase API access locked down separately; server-side Drizzle is the intended app access path.
 
 ## Architecture Overview
 
 ```
 src/
 ├── app/
-│   ├── (public)/     # Publicly accessible routes (problems, sheet)
-│   ├── admin/        # Strict Admin dashboard (KPIs, Users, Content Ops)
-│   ├── dashboard/    # Auth-gated user progress (POTD, Solved focus)
-│   ├── settings/     # Auth-gated platform integration config
-│   └── api/          # Route handlers (webhooks)
-├── components/       # Shared UI
-├── db/schema/        # Drizzle schemas
-├── features/         # Domain-driven feature slicing
-└── lib/platforms/    # Adapter logic for Codeforces and AtCoder sync
+│   ├── (public)/   # Browse route group (/problems, /sheet, /leaderboard, /topics)
+│   ├── (auth)/     # Clerk auth pages (/sign-in, /sign-up)
+│   ├── (app)/      # Auth-gated user pages (/dashboard, /settings)
+│   ├── admin/      # Strict Admin dashboard (KPIs, Users, Content Ops)
+│   ├── layout.tsx  # Root layout
+│   └── page.tsx    # Landing page
+├── components/
+│   ├── actions/    # Server actions barrel (re-exports actions)
+│   ├── admin/      # Admin domain components
+│   ├── Common/     # Shared reusable components
+│   ├── dashboard/  # Dashboard page components
+│   ├── leaderboard/# Leaderboard page components
+│   ├── molecules/  # shadcn/radix primitives (from components/ui)
+│   ├── problems/   # Problems table, creation & filters
+│   ├── sheet/      # Sheet details & mappings
+│   ├── site/       # Site chrome (header, backgrounds)
+│   ├── topics/     # Topics lists & creation
+│   ├── tracking/   # Solved/tried state overlays and dialogs
+│   └── users/      # Users lists components
+├── constants.ts    # Centralized parameters (default rating, API bases, etc.)
+├── hooks/          # Custom React hooks
+├── providers/      # React Context / wrapper providers
+├── services/       # Core Integration & Storage services
+│   ├── Auth/       # Clerk-backed auth utils (auth.ts, env.ts)
+│   ├── Database/   # Drizzle client (client.ts) & schemas (schema/*)
+│   └── Platforms/  # Codeforces & AtCoder sync adapters
+├── types/          # Centralized schema models and types
+├── utils/          # Pure utility functions (cn helper, problem-url builders)
+└── proxy.ts        # Next.js 16 Clerk routing & auth protection middleware proxy
 ```
+
+`src/proxy.ts` uses the Next.js 16 proxy middleware convention for Clerk route protection in this repo; it is retained in place of the older `middleware.ts` naming.
 
 ## Platform Integrations
 
 Qorithm uses the **Adapter Pattern** to sync external solves.
+
 - **Codeforces**: Utilizes the official Codeforces API (`/user.info`, `/user.status`).
 - **AtCoder**: Utilizes the community Kenkoooo API.
-Users must link their handles via `/settings` to enable automated syncing of their dashboard and daily streaks.
+  Users link their handles via `/settings`, then use the sync actions to import matched solves into their dashboard and streak state.
+
+## Script Reference
+
+- `scripts/seed.ts`: seeds starter topics, sheet sections, Codeforces problems, and custom problems.
+- `scripts/build-qorithm-curriculum.mjs`: builds curriculum CSV/summary files in `data/curriculum/` from Codeforces and AtCoder APIs.
+- `scripts/import-curriculum.ts`: imports built curriculum sections/problems and section mappings into Postgres.
+- `scripts/backfill-problem-topics.ts`: creates missing topics and backfills `problem_topics` mappings from curriculum tags.
+- `scripts/check-counts.ts`: utility for checking table counts.
+- `scripts/apply_schema.ts`, `scripts/manual-migration.ts`, `scripts/repair-migration-baseline.ts`: manual schema/migration recovery utilities.
 
 ## Verification Checklist
 
 Before announcing a launch, verify the following:
+
 1. **Public Reads**: Navigate to `/problems` in an incognito window. Ensure published problems load.
 2. **Auth-Gated Interactions**: Attempt to click the bookmark star on a problem while signed out. Ensure the inline React state auth-gate popup appears to redirect you to Clerk.
 3. **Protected Routes**: Attempt to navigate directly to `/dashboard` while signed out. Ensure you are redirected away.

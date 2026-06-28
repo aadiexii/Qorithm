@@ -40,7 +40,7 @@ async function run() {
     // Ignore duplicate constraint errors if they already exist
     try {
       await sql`ALTER TABLE "sheet_section_problems" ADD CONSTRAINT "sheet_section_problems_section_id_sheet_sections_id_fk" FOREIGN KEY ("section_id") REFERENCES "public"."sheet_sections"("id") ON DELETE cascade ON UPDATE no action;`;
-    } catch { 
+    } catch {
       // Ignore
     }
 
@@ -50,11 +50,31 @@ async function run() {
       // Ignore
     }
 
-    try { await sql`CREATE UNIQUE INDEX "sheet_sections_slug_idx" ON "sheet_sections" USING btree ("slug");`; } catch { /* Ignore */ }
-    try { await sql`CREATE INDEX "sheet_sections_published_sort_idx" ON "sheet_sections" USING btree ("is_published","sort_order");`; } catch { /* Ignore */ }
-    try { await sql`CREATE UNIQUE INDEX "sheet_section_problems_section_order_idx" ON "sheet_section_problems" USING btree ("section_id","order_index");`; } catch { /* Ignore */ }
-    try { await sql`CREATE INDEX "sheet_section_problems_section_id_idx" ON "sheet_section_problems" USING btree ("section_id");`; } catch { /* Ignore */ }
-    try { await sql`CREATE INDEX "sheet_section_problems_problem_id_idx" ON "sheet_section_problems" USING btree ("problem_id");`; } catch { /* Ignore */ }
+    try {
+      await sql`CREATE UNIQUE INDEX "sheet_sections_slug_idx" ON "sheet_sections" USING btree ("slug");`;
+    } catch {
+      /* Ignore */
+    }
+    try {
+      await sql`CREATE INDEX "sheet_sections_published_sort_idx" ON "sheet_sections" USING btree ("is_published","sort_order");`;
+    } catch {
+      /* Ignore */
+    }
+    try {
+      await sql`CREATE UNIQUE INDEX "sheet_section_problems_section_order_idx" ON "sheet_section_problems" USING btree ("section_id","order_index");`;
+    } catch {
+      /* Ignore */
+    }
+    try {
+      await sql`CREATE INDEX "sheet_section_problems_section_id_idx" ON "sheet_section_problems" USING btree ("section_id");`;
+    } catch {
+      /* Ignore */
+    }
+    try {
+      await sql`CREATE INDEX "sheet_section_problems_problem_id_idx" ON "sheet_section_problems" USING btree ("problem_id");`;
+    } catch {
+      /* Ignore */
+    }
 
     console.log("Migration completed.");
   } catch (err) {

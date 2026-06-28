@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/molecules/skeleton";
 
 export default function AdminLoading() {
   return (

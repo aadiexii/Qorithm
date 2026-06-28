@@ -1,7 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/molecules/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/molecules/card";
 
 export default function AdminError({
   error,
@@ -12,7 +18,7 @@ export default function AdminError({
 }) {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <Card className="w-full max-w-md bg-card/80">
+      <Card className="bg-card/80 w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-red-600">Admin Error</CardTitle>
           <CardDescription>
@@ -20,7 +26,7 @@ export default function AdminError({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">{error.message}</p>
+          <p className="text-muted-foreground text-sm">{error.message}</p>
           <Button onClick={reset}>Try again</Button>
         </CardContent>
       </Card>

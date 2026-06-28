@@ -37,22 +37,45 @@ const SECTIONS = [
 
 const SECTION_TAGS = {
   "C++ Core Foundations": ["implementation", "math", "strings"],
-  "STL in Practice": ["data structures", "sortings", "binary search", "implementation"],
+  "STL in Practice": [
+    "data structures",
+    "sortings",
+    "binary search",
+    "implementation",
+  ],
   "Math Essentials for CP": ["math", "number theory", "combinatorics"],
-  "Implementation Basics": ["implementation", "brute force", "strings", "constructive algorithms"],
+  "Implementation Basics": [
+    "implementation",
+    "brute force",
+    "strings",
+    "constructive algorithms",
+  ],
   "Greedy Decisions": ["greedy", "sortings", "implementation"],
-  "Recursive Exploration": ["dfs and similar", "dp", "brute force", "backtracking"],
+  "Recursive Exploration": [
+    "dfs and similar",
+    "dp",
+    "brute force",
+    "backtracking",
+  ],
   "Bitwise Toolkit": ["bitmasks", "math", "implementation"],
   "Range Sum Patterns": ["prefix sums", "implementation", "binary search"],
   "Binary Search Precision": ["binary search", "sortings", "two pointers"],
   "Pointer Control": ["two pointers", "sortings", "implementation"],
   "Sorting and Order Logic": ["sortings", "greedy", "data structures"],
-  "Constructive Strategies": ["constructive algorithms", "greedy", "implementation"],
+  "Constructive Strategies": [
+    "constructive algorithms",
+    "greedy",
+    "implementation",
+  ],
   "State Transition Basics (DP I)": ["dp"],
   "Graph Traversal Core": ["graphs", "dfs and similar", "shortest paths"],
   "Tree Reasoning Core": ["trees", "dfs and similar", "dp"],
   "DSU and Component Merging": ["dsu", "graphs", "data structures"],
-  "Segment Trees in Practice": ["data structures", "segment tree", "divide and conquer"],
+  "Segment Trees in Practice": [
+    "data structures",
+    "segment tree",
+    "divide and conquer",
+  ],
   "Number Theory Core": ["number theory", "math"],
   "Combinatorics and Probability": ["combinatorics", "probabilities", "math"],
   "String Algorithms Core": ["strings", "string suffix structures", "hashing"],
@@ -60,12 +83,39 @@ const SECTION_TAGS = {
   "Advanced Graph Techniques": ["graphs", "flows", "shortest paths", "dsu"],
   "Advanced Number Theory": ["number theory", "math", "fft"],
   "Game Theory Essentials": ["games", "dp", "math"],
-  "Mixed Checkpoint Set A": ["implementation", "greedy", "dp", "graphs", "math"],
+  "Mixed Checkpoint Set A": [
+    "implementation",
+    "greedy",
+    "dp",
+    "graphs",
+    "math",
+  ],
   "Mixed Checkpoint Set B": ["dp", "graphs", "data structures", "math"],
-  "Mixed Checkpoint Set C": ["dp", "graphs", "number theory", "data structures"],
-  "Contest Readiness Set D": ["dp", "graphs", "data structures", "constructive algorithms"],
-  "Contest Readiness Set E": ["dp", "graphs", "data structures", "number theory"],
-  "Elite Mixed Set F": ["dp", "graphs", "number theory", "data structures", "constructive algorithms"],
+  "Mixed Checkpoint Set C": [
+    "dp",
+    "graphs",
+    "number theory",
+    "data structures",
+  ],
+  "Contest Readiness Set D": [
+    "dp",
+    "graphs",
+    "data structures",
+    "constructive algorithms",
+  ],
+  "Contest Readiness Set E": [
+    "dp",
+    "graphs",
+    "data structures",
+    "number theory",
+  ],
+  "Elite Mixed Set F": [
+    "dp",
+    "graphs",
+    "number theory",
+    "data structures",
+    "constructive algorithms",
+  ],
 };
 
 const AC_DAYS = new Set([5, 9, 14, 18, 22, 26, 30]);
@@ -154,7 +204,10 @@ function pickAtCoder(candidates, used, target, sectionNo) {
     const ratingScore = 600 - Math.abs(p.difficulty - target);
     let contestScore = 0;
     if (sectionNo <= 12 && p.contest_id.startsWith("abc")) contestScore += 80;
-    if (sectionNo >= 21 && (p.contest_id.startsWith("arc") || p.contest_id.startsWith("agc")))
+    if (
+      sectionNo >= 21 &&
+      (p.contest_id.startsWith("arc") || p.contest_id.startsWith("agc"))
+    )
       contestScore += 80;
     const score = ratingScore + contestScore;
     if (score > bestScore) {
@@ -172,10 +225,15 @@ function isMostlyAsciiTitle(title) {
 
 async function main() {
   const cf = await fetchJson("https://codeforces.com/api/problemset.problems");
-  if (cf.status !== "OK") throw new Error("Codeforces API returned non-OK status");
+  if (cf.status !== "OK")
+    throw new Error("Codeforces API returned non-OK status");
 
-  const atProblems = await fetchJson("https://kenkoooo.com/atcoder/resources/problems.json");
-  const atModels = await fetchJson("https://kenkoooo.com/atcoder/resources/problem-models.json");
+  const atProblems = await fetchJson(
+    "https://kenkoooo.com/atcoder/resources/problems.json",
+  );
+  const atModels = await fetchJson(
+    "https://kenkoooo.com/atcoder/resources/problem-models.json",
+  );
   const atModelMap = new Map(Object.entries(atModels));
 
   const cfPool = cf.result.problems
@@ -204,7 +262,9 @@ async function main() {
         p.difficulty != null &&
         !Number.isNaN(p.difficulty) &&
         isMostlyAsciiTitle(p.title) &&
-        (p.contest_id.startsWith("abc") || p.contest_id.startsWith("arc") || p.contest_id.startsWith("agc")),
+        (p.contest_id.startsWith("abc") ||
+          p.contest_id.startsWith("arc") ||
+          p.contest_id.startsWith("agc")),
     );
 
   const used = new Set();
@@ -257,8 +317,13 @@ async function main() {
       }
 
       if (!row) {
-        const cfPick = pickCodeforces(cfPool, used, target, tags) ?? pickCodeforces(cfPool, used, target, []);
-        if (!cfPick) throw new Error(`No Codeforces candidate for section ${sectionNo} day ${day}`);
+        const cfPick =
+          pickCodeforces(cfPool, used, target, tags) ??
+          pickCodeforces(cfPool, used, target, []);
+        if (!cfPick)
+          throw new Error(
+            `No Codeforces candidate for section ${sectionNo} day ${day}`,
+          );
         const pid = `${cfPick.contestId}:${cfPick.index}`;
         used.add(`cf:${pid}`);
         row = {
@@ -334,7 +399,11 @@ async function main() {
     codeforces: problemRows.filter((r) => r.platform === "codeforces").length,
     atcoder: problemRows.filter((r) => r.platform === "atcoder").length,
   };
-  await writeFile(path.join(outDir, "summary.json"), JSON.stringify(summary, null, 2), "utf8");
+  await writeFile(
+    path.join(outDir, "summary.json"),
+    JSON.stringify(summary, null, 2),
+    "utf8",
+  );
 
   console.log("Curriculum generated:", summary);
   console.log("Output:", outDir);

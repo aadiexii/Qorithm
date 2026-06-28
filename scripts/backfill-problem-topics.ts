@@ -7,7 +7,11 @@ import path from "node:path";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import { problems, topics, problemTopics } from "../src/db/schema/problems";
+import {
+  problems,
+  topics,
+  problemTopics,
+} from "../src/services/Database/schema/problems";
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
@@ -33,24 +37,47 @@ function parseCsv(content: string): string[][] {
     const next = content[i + 1];
 
     if (inQuotes) {
-      if (ch === '"' && next === '"') { field += '"'; i++; }
-      else if (ch === '"') { inQuotes = false; }
-      else { field += ch; }
+      if (ch === '"' && next === '"') {
+        field += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        field += ch;
+      }
       continue;
     }
 
-    if (ch === '"') { inQuotes = true; continue; }
-    if (ch === ",") { row.push(field); field = ""; continue; }
-    if (ch === "\n") { row.push(field); rows.push(row); row = []; field = ""; continue; }
+    if (ch === '"') {
+      inQuotes = true;
+      continue;
+    }
+    if (ch === ",") {
+      row.push(field);
+      field = "";
+      continue;
+    }
+    if (ch === "\n") {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+      continue;
+    }
     if (ch === "\r") continue;
     field += ch;
   }
 
-  if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+  if (field.length > 0 || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
   return rows.filter((r) => !(r.length === 1 && r[0] === ""));
 }
 
-function rowsToObjects<T extends Record<string, string>>(rows: string[][]): T[] {
+function rowsToObjects<T extends Record<string, string>>(
+  rows: string[][],
+): T[] {
   if (rows.length < 2) return [];
   const [header, ...data] = rows;
   return data.map((r) => {
@@ -65,49 +92,49 @@ function rowsToObjects<T extends Record<string, string>>(rows: string[][]): T[] 
 // ---------------------------------------------------------------------------
 
 const TAG_NORMALIZATION: Record<string, string> = {
-  "dp": "dynamic-programming",
+  dp: "dynamic-programming",
   "dynamic programming": "dynamic-programming",
-  "maths": "math",
-  "math": "math",
-  "graphs": "graph",
-  "graph": "graph",
-  "sortings": "sorting",
-  "sorting": "sorting",
+  maths: "math",
+  math: "math",
+  graphs: "graph",
+  graph: "graph",
+  sortings: "sorting",
+  sorting: "sorting",
   "binary search": "binary-search",
   "data structures": "data-structures",
-  "string": "strings",
-  "strings": "strings",
+  string: "strings",
+  strings: "strings",
   "two pointers": "two-pointers",
   "number theory": "number-theory",
-  "bitmask": "bitmasks",
-  "bitmasks": "bitmasks",
+  bitmask: "bitmasks",
+  bitmasks: "bitmasks",
   "bit manipulation": "bitmasks",
-  "combinatorics": "combinatorics",
+  combinatorics: "combinatorics",
   "divide and conquer": "divide-and-conquer",
-  "dsu": "dsu",
-  "greedy": "greedy",
-  "implementation": "implementation",
+  dsu: "dsu",
+  greedy: "greedy",
+  implementation: "implementation",
   "constructive algorithms": "constructive-algorithms",
-  "geometry": "geometry",
+  geometry: "geometry",
   "brute force": "brute-force",
   "dfs and similar": "dfs-and-similar",
-  "trees": "trees",
+  trees: "trees",
   "shortest paths": "shortest-paths",
-  "hashing": "hashing",
-  "interactive": "interactive",
-  "games": "games",
-  "matrices": "matrices",
-  "probabilities": "probabilities",
+  hashing: "hashing",
+  interactive: "interactive",
+  games: "games",
+  matrices: "matrices",
+  probabilities: "probabilities",
   "meet-in-the-middle": "meet-in-the-middle",
-  "flows": "flows",
+  flows: "flows",
   "graph matchings": "graph-matchings",
   "2-sat": "2-sat",
-  "fft": "fft",
+  fft: "fft",
   "ternary search": "ternary-search",
-  "simulation": "simulation",
-  "stack": "stack",
-  "queue": "queue",
-  "recursion": "recursion",
+  simulation: "simulation",
+  stack: "stack",
+  queue: "queue",
+  recursion: "recursion",
 };
 
 function normalizeTag(tag: string): string {
@@ -116,7 +143,10 @@ function normalizeTag(tag: string): string {
 }
 
 function tagSlugToName(slug: string): string {
-  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return slug
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 // ---------------------------------------------------------------------------
@@ -151,7 +181,12 @@ async function main() {
   console.log("\n📚 Qorithm — Problem Topic Backfill (batched)");
   console.log("===============================================\n");
 
-  const csvPath = path.join(process.cwd(), "data", "curriculum", "problems.csv");
+  const csvPath = path.join(
+    process.cwd(),
+    "data",
+    "curriculum",
+    "problems.csv",
+  );
   const content = await readFile(csvPath, "utf-8");
   const rows = parseCsv(content);
   const csvRows = rowsToObjects<ProblemCsvRow>(rows);
@@ -159,7 +194,12 @@ async function main() {
 
   // Load all DB problems
   const allProblems = await db
-    .select({ id: problems.id, platform: problems.platform, contestId: problems.externalContestId, index: problems.externalProblemIndex })
+    .select({
+      id: problems.id,
+      platform: problems.platform,
+      contestId: problems.externalContestId,
+      index: problems.externalProblemIndex,
+    })
     .from(problems);
 
   const problemLookup = new Map<string, string>();
@@ -176,8 +216,15 @@ async function main() {
   console.log(`Existing topics: ${existingTopics.length}`);
 
   // Load existing problem_topics
-  const existingPT = await db.select({ problemId: problemTopics.problemId, topicId: problemTopics.topicId }).from(problemTopics);
-  const existingPTSet = new Set(existingPT.map((pt) => `${pt.problemId}:${pt.topicId}`));
+  const existingPT = await db
+    .select({
+      problemId: problemTopics.problemId,
+      topicId: problemTopics.topicId,
+    })
+    .from(problemTopics);
+  const existingPTSet = new Set(
+    existingPT.map((pt) => `${pt.problemId}:${pt.topicId}`),
+  );
   console.log(`Existing problem_topics rows: ${existingPT.length}\n`);
 
   // --- Phase 1: collect all needed slugs, create missing topics in bulk ---
@@ -186,8 +233,12 @@ async function main() {
   for (const row of csvRows) {
     if (!row.tags) continue;
     let rawTags: string[];
-    try { rawTags = JSON.parse(row.tags); if (!Array.isArray(rawTags)) continue; }
-    catch { continue; }
+    try {
+      rawTags = JSON.parse(row.tags);
+      if (!Array.isArray(rawTags)) continue;
+    } catch {
+      continue;
+    }
     for (const t of rawTags) neededSlugs.add(normalizeTag(t));
   }
 
@@ -216,14 +267,19 @@ async function main() {
   for (const row of csvRows) {
     if (!row.tags) continue;
     let rawTags: string[];
-    try { rawTags = JSON.parse(row.tags); if (!Array.isArray(rawTags)) continue; }
-    catch { continue; }
+    try {
+      rawTags = JSON.parse(row.tags);
+      if (!Array.isArray(rawTags)) continue;
+    } catch {
+      continue;
+    }
 
     let dbId: string | undefined;
     if (row.platform === "codeforces") {
       const [contestRaw, indexRaw] = row.problem_id.split(":");
       const contestId = Number(contestRaw);
-      if (contestId && indexRaw) dbId = problemLookup.get(`codeforces:${contestId}:${indexRaw}`);
+      if (contestId && indexRaw)
+        dbId = problemLookup.get(`codeforces:${contestId}:${indexRaw}`);
     } else if (row.platform === "atcoder") {
       const [contestId, taskId] = row.problem_id.split(":");
       if (contestId && taskId) {
@@ -232,7 +288,10 @@ async function main() {
       }
     }
 
-    if (!dbId) { problemsMissed++; continue; }
+    if (!dbId) {
+      problemsMissed++;
+      continue;
+    }
     problemsMatched++;
 
     for (const rawTag of rawTags) {
@@ -247,7 +306,9 @@ async function main() {
     }
   }
 
-  console.log(`Problems matched: ${problemsMatched}, not found in DB: ${problemsMissed}`);
+  console.log(
+    `Problems matched: ${problemsMatched}, not found in DB: ${problemsMissed}`,
+  );
   console.log(`New problem_topics to insert: ${toInsert.length}`);
 
   // --- Phase 3: batch insert in chunks of 500 ---
@@ -257,7 +318,9 @@ async function main() {
     const chunk = toInsert.slice(i, i + CHUNK);
     await db.insert(problemTopics).values(chunk).onConflictDoNothing();
     ptAdded += chunk.length;
-    process.stdout.write(`  Inserted ${Math.min(ptAdded, toInsert.length)} / ${toInsert.length}\r`);
+    process.stdout.write(
+      `  Inserted ${Math.min(ptAdded, toInsert.length)} / ${toInsert.length}\r`,
+    );
   }
 
   console.log("\n\nResults:");
@@ -265,7 +328,9 @@ async function main() {
   console.log(`  Problems not found in DB:       ${problemsMissed}`);
   console.log(`  New topics created:             ${topicsCreated}`);
   console.log(`  New problem_topics rows added:  ${ptAdded}`);
-  console.log(`  Total problem_topics after:     ${existingPT.length + ptAdded}`);
+  console.log(
+    `  Total problem_topics after:     ${existingPT.length + ptAdded}`,
+  );
 
   console.log("\n✅ Backfill complete.\n");
   await client.end();

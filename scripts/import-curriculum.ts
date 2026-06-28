@@ -11,7 +11,7 @@ import {
   problems,
   sheetSectionProblems,
   sheetSections,
-} from "../src/db/schema";
+} from "../src/services/Database/schema";
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
@@ -208,12 +208,18 @@ async function main() {
   }
 
   // Upsert problems and prepare mapping payload
-  const mappingBySection = new Map<string, Array<{ problemId: string; orderIndex: number }>>();
+  const mappingBySection = new Map<
+    string,
+    Array<{ problemId: string; orderIndex: number }>
+  >();
 
   for (const p of problemRows) {
     const dayOrder = Number(p.day_order);
     const rating = p.cf_rating ? Number(p.cf_rating) : null;
-    const externalDifficulty = p.platform === "atcoder" && p.atcoder_difficulty ? Number(p.atcoder_difficulty) : null;
+    const externalDifficulty =
+      p.platform === "atcoder" && p.atcoder_difficulty
+        ? Number(p.atcoder_difficulty)
+        : null;
 
     let externalContestId: number;
     let externalProblemIndex: string;
@@ -282,7 +288,9 @@ async function main() {
     const sectionId = sectionIdBySlug.get(slug);
     if (!sectionId) throw new Error(`Missing section id for slug ${slug}`);
 
-    await db.delete(sheetSectionProblems).where(eq(sheetSectionProblems.sectionId, sectionId));
+    await db
+      .delete(sheetSectionProblems)
+      .where(eq(sheetSectionProblems.sectionId, sectionId));
     await db.insert(sheetSectionProblems).values(
       mappings
         .sort((a, b) => a.orderIndex - b.orderIndex)
@@ -294,7 +302,10 @@ async function main() {
     );
   }
 
-  const totalMappings = [...mappingBySection.values()].reduce((s, a) => s + a.length, 0);
+  const totalMappings = [...mappingBySection.values()].reduce(
+    (s, a) => s + a.length,
+    0,
+  );
   console.log(
     `Imported curriculum: sections=${sectionRows.length}, problems=${problemRows.length}, mappings=${totalMappings}`,
   );
@@ -306,4 +317,3 @@ main().catch((err) => {
   console.error("Curriculum import failed:", err);
   process.exit(1);
 });
-

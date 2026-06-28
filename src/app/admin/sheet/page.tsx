@@ -1,5 +1,5 @@
-import { listSectionsForAdmin } from "@/features/sheet/admin-actions";
-import { SheetMappingClient } from "@/features/sheet/components/sheet-mapping-client";
+import { listSectionsForAdmin } from "@/components/actions/sheet-admin-actions";
+import { SheetMappingClient } from "@/components/sheet/sheet-mapping-client";
 
 export default async function AdminSheetPage() {
   const sections = await listSectionsForAdmin();
@@ -8,7 +8,7 @@ export default async function AdminSheetPage() {
     <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">Sheet Mapping</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Map problems to CP Sheet sections and control their order.
         </p>
       </div>
