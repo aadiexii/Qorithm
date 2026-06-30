@@ -78,7 +78,7 @@
 
 ## Phase 7 — Scalable Repo Refactor
 
-- **Next.js Route Groups**: Folders wrapped in parentheses (`(public)`, `(auth)`, `(app)`) are a pure organizational convention — they group related routes for layout and cognitive clarity without altering any URLs. The `/problems` URL is identical whether the file lives at `app/problems/page.tsx` or `app/(public)/problems/page.tsx`.
+- **Next.js Route Groups**: Folders wrapped in parentheses (`(public)`, `(auth)`, `(app)`) are a pure organizational convention — they group related routes for layout and cognitive clarity without altering any URLs. The `/sheet` URL is identical whether the file lives at `app/sheet/page.tsx` or `app/(public)/sheet/page.tsx`.
 - **Admin Stays Flat**: The `admin/` directory was intentionally kept as a flat route (not wrapped in a group) because it has its own guarded layout. Grouping it would add no value and could introduce subtle layout hierarchy issues.
 - **Proxy Naming Convention**: Retained `src/proxy.ts` because Next.js 16 officially deprecates the `middleware.ts` filename in favor of `proxy.ts`. Building and deploying with `proxy.ts` works cleanly and complies with the latest conventions.
 - **Renamed `src/server/` to `src/services/Auth/`**: Consolidated server-side Auth (`src/services/Auth/auth.ts`) and Env parsing (`src/services/Auth/env.ts`) into the new `services/` directory layer.
@@ -87,5 +87,5 @@
 
 ## Docs Reconciliation
 
-- Documentation must be checked against `package.json`, `src/app`, `src/features`, `src/db/schema`, `src/lib/platforms`, and `scripts/` before claiming framework version, database provider, route availability, or feature status.
+- Documentation must be checked against `package.json`, `src/app`, `src/components`, `src/services/Database/schema`, `src/services/Platforms`, and `scripts/` before claiming framework version, database provider, route availability, or feature status.
 - Keep deployment docs provider-neutral: this repo uses PostgreSQL through Drizzle server queries, not a Supabase client path. If Supabase is the backing provider, its RLS/API posture is separate deployment hardening.

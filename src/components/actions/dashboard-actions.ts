@@ -7,14 +7,15 @@ import { userProblemStates } from "@/services/Database/schema/tracking";
 import { sheetSectionProblems } from "@/services/Database/schema/sheet";
 import { userOaProblemStates } from "@/services/Database/schema/oa";
 import { getCurrentSession } from "@/services/Auth/auth";
+import { calculateStreak } from "@/components/actions/potd-actions";
 
 export async function getDashboardStats() {
   const session = await getCurrentSession();
   if (!session) {
     return {
-      totalSolved: 0,
       sheetSolved: 0,
       oaSolved: 0,
+      streak: 0,
       codeforcesHandle: null,
     };
   }
@@ -54,14 +55,13 @@ export async function getDashboardStats() {
       ),
     );
 
-  const sheetSolved = sheetSolvedRes?.count ?? 0;
-  const oaSolved = oaSolvedRes?.count ?? 0;
-  const totalSolved = sheetSolved + oaSolved;
+  // 4. Streak
+  const streak = await calculateStreak(userId);
 
   return {
-    totalSolved,
-    sheetSolved,
-    oaSolved,
+    sheetSolved: sheetSolvedRes?.count ?? 0,
+    oaSolved: oaSolvedRes?.count ?? 0,
+    streak,
     codeforcesHandle: userRow?.codeforcesHandle ?? null,
   };
 }

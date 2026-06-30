@@ -19,20 +19,18 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-12">
-      <div className="space-y-2">
-        <p className="text-muted-foreground text-sm font-semibold tracking-[0.28em] uppercase">
+      <div className="space-y-1.5">
+        <h1 className="text-3xl font-semibold tracking-tight text-white">
           Settings
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Account settings
         </h1>
-        <p className="text-muted-foreground">
-          Configure your Codeforces integration for personalized daily
-          challenges.
+        <p className="text-sm text-slate-400">
+          Manage your platform connections and account preferences.
         </p>
       </div>
 
-      <div className="max-w-2xl">
+      <div className="h-px bg-white/5" />
+
+      <div className="max-w-md">
         <PlatformConnections codeforcesHandle={user.codeforcesHandle} />
       </div>
     </div>

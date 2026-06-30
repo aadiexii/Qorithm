@@ -3,7 +3,6 @@ export * from "./activity-actions";
 export * from "./connection-actions";
 export * from "./dashboard-actions";
 export * from "./potd-actions";
-export * from "./solved-actions";
 export * from "./leaderboard-actions";
 export * from "./oa-actions";
 export * from "./sheet-actions";

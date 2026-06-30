@@ -79,18 +79,18 @@ The codebase is organized into clear layered modules:
 ```
 src/
 ├── app/
-│   ├── (public)/   # Browse route group: /problems, /sheet, /leaderboard, /topics
+│   ├── (public)/   # Browse route group: /OA, /sheet, /topics
 │   ├── (auth)/     # Auth routes: /sign-in, /sign-up
 │   ├── (app)/      # Auth-gated routes: /dashboard, /settings
 │   └── admin/      # Admin-only console: /admin/**
 ├── components/
 │   ├── actions/    # Server actions barrel (re-exports actions)
 │   ├── admin/      # Admin domain components
-│   ├── Common/     # Shared reusable components
 │   ├── dashboard/  # Dashboard page components
 │   ├── leaderboard/# Leaderboard page components
 │   ├── molecules/  # shadcn/radix primitives (from components/ui)
-│   ├── problems/   # Problems table, creation & filters
+│   ├── oa/         # OA roadmap components
+│   ├── shared/     # Shared reusable components
 │   ├── sheet/      # Sheet details & mappings
 │   ├── site/       # Site chrome (header, backgrounds)
 │   ├── topics/     # Topics lists & creation

@@ -99,4 +99,42 @@ export const CodeforcesAdapter: PlatformAdapter = {
       avatar: user.avatar ?? null,
     };
   },
+
+  async fetchSubmissions(handle: string): Promise<
+    { problem: { contestId: number; index: string }; verdict: string }[]
+  > {
+    const encodedHandle = encodeURIComponent(handle);
+    let res: Response;
+    try {
+      res = await fetchWithTimeoutAndRetry(
+        `https://codeforces.com/api/user.status?handle=${encodedHandle}&from=1&count=100`,
+        8000,
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Network error";
+      throw new Error(`Could not reach Codeforces API: ${message}`, { cause: err });
+    }
+
+    if (!res.ok) {
+      throw new Error(`Codeforces API returned ${res.status}.`);
+    }
+
+    let data: unknown;
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error("Codeforces API returned an unreadable response.");
+    }
+
+    const payload = data as {
+      status: string;
+      result?: { problem: { contestId: number; index: string }; verdict: string }[];
+    };
+
+    if (payload.status !== "OK") {
+      throw new Error("Codeforces API error fetching submissions.");
+    }
+
+    return payload.result ?? [];
+  },
 };

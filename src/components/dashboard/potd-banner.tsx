@@ -60,11 +60,11 @@ export function PotdBanner({ potdTitle, isSolved }: POTDBannerProps) {
   // Signed in with POTD
   return (
     <div
-      className={`mb-6 flex flex-col justify-between gap-3 rounded-lg border px-4 py-3 shadow-sm backdrop-blur sm:flex-row sm:items-center ${isSolved ? "border-emerald-500/20 bg-emerald-500/5" : "border-border/50 bg-card/50"}`}
+      className={`mb-6 flex flex-col justify-between gap-3 rounded-lg border px-4 py-3 shadow-sm backdrop-blur sm:flex-row sm:items-center ${isSolved ? "border-accent/20 bg-accent/5" : "border-border/50 bg-card/50"}`}
     >
       <div className="flex items-center gap-3">
         <div
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${isSolved ? "bg-emerald-500/20 text-emerald-400" : "bg-accent/20 text-accent"}`}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-accent"
         >
           <CalendarClock className="h-4 w-4" />
         </div>
@@ -74,7 +74,7 @@ export function PotdBanner({ potdTitle, isSolved }: POTDBannerProps) {
             <span className="font-semibold">{potdTitle}</span>
           </p>
           {isSolved && (
-            <span className="inline-block w-fit rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
+            <span className="inline-block w-fit rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
               Solved
             </span>
           )}
@@ -82,7 +82,7 @@ export function PotdBanner({ potdTitle, isSolved }: POTDBannerProps) {
       </div>
       <Link
         href="/dashboard"
-        className={`flex shrink-0 items-center gap-1 text-sm font-semibold hover:underline ${isSolved ? "text-emerald-400" : "text-accent"}`}
+        className="flex shrink-0 items-center gap-1 text-sm font-semibold text-accent hover:underline"
       >
         {isSolved ? "View Dashboard" : "Solve Now"}{" "}
         <ArrowRight className="h-3.5 w-3.5" />

@@ -14,9 +14,9 @@
 src/
 ├── app/
 │   ├── (public)/         # Browse routes grouped without changing URLs
-│   │   ├── problems/     # /problems — problem catalog with filters
+│   │   ├── problems/     # /problems — problem catalog (archived)
 │   │   ├── sheet/        # /sheet and /sheet/[slug] — curated learning tracks
-│   │   ├── leaderboard/  # /leaderboard — global rankings page
+│   │   ├── OA/           # /OA and /OA/[company]/[section] — company PYQ roadmaps
 │   │   └── topics/       # /topics — topic index
 │   ├── (auth)/           # Clerk authentication pages
 │   │   ├── sign-in/      # /sign-in
@@ -26,10 +26,8 @@ src/
 │   │   └── settings/     # /settings — platform connection management
 │   ├── admin/            # Strict admin-only management console (flat, guarded layout)
 │   │   ├── activity/     # /admin/activity — global activity feed
-│   │   ├── import/       # /admin/import — CSV bulk import
-│   │   ├── problems/     # /admin/problems — problem CRUD
+│   │   ├── oa/           # /admin/oa — company / section / problem CRUD
 │   │   ├── sheet/        # /admin/sheet — section-to-problem mapping
-│   │   ├── topics/       # /admin/topics — topic CRUD
 │   │   └── users/        # /admin/users — user management
 │   ├── layout.tsx        # Root layout (ClerkProvider, SiteHeader, fonts)
 │   └── page.tsx          # Landing page (/)
@@ -37,11 +35,11 @@ src/
 ├── components/
 │   ├── actions/          # Flat server actions (barrel re-exported)
 │   ├── admin/            # Admin CRUD layouts & import tables
-│   ├── Common/           # Shared reusable components
 │   ├── dashboard/        # Dashboard stats, heatmap, and POTD cards
 │   ├── leaderboard/      # Leaderboard rankings UI
 │   ├── molecules/        # shadcn/radix primitives (from components/ui)
-│   ├── problems/         # Problem catalog tables and creation forms
+│   ├── oa/               # OA roadmap cards and section components
+│   ├── shared/           # Shared reusable components
 │   ├── sheet/            # Sheet lists and section mappings
 │   ├── site/             # Global site chrome (SiteHeader, DotGridBackground)
 │   ├── topics/           # Topics catalog tables and creation forms
@@ -70,7 +68,7 @@ src/
 
 Route groups (folders with parentheses like `(public)`) are a Next.js App Router convention. They organize routes into logical groups **without affecting URLs**:
 
-- `(public)` — `/problems`, `/sheet`, `/leaderboard`, `/topics`; the group does not enforce auth by itself, and `/leaderboard` currently performs its own session redirect
+- `(public)` — `/sheet`, `/OA`, `/topics`; the group does not enforce auth by itself
 - `(auth)` — `/sign-in`, `/sign-up` (Clerk-provided widgets)
 - `(app)` — `/dashboard`, `/settings` (redirect to `/` if session is missing)
 - `admin` — **flat route** (intentionally not grouped — has its own guarded layout)
@@ -80,8 +78,8 @@ Route groups (folders with parentheses like `(public)`) are a Next.js App Router
 This project utilizes a layered structure that groups components by role rather than domain slices:
 
 - **Server Actions**: All Next.js server actions are placed flat under `src/components/actions/` and re-exported via `src/components/actions/index.ts`. Action files only export function logic and do not export types to prevent Next.js server action bundler errors.
-- **Domain Components**: Components consumed by pages are organized under `src/components/<domain>/` (e.g. `src/components/problems/` for problem list views and forms).
-- **Global / Shared**: Global UI primitives are under `src/components/molecules/`, and shared chrome layouts are under `src/components/site/` or `src/components/Common/`.
+- **Domain Components**: Components consumed by pages are organized under `src/components/<domain>/` (e.g. `src/components/oa/` for OA roadmap views, `src/components/sheet/` for sheet section views).
+- **Global / Shared**: Global UI primitives are under `src/components/molecules/`, and shared chrome layouts are under `src/components/site/` or `src/components/shared/`.
 
 ## Data Model
 

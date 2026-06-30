@@ -39,10 +39,5 @@ export function buildProblemUrl(
     return source;
   }
 
-  // Simple heuristic for LeetCode from source string like "LeetCode 1"
-  if (platform === "custom" && source.toLowerCase().includes("leetcode")) {
-    return "https://leetcode.com/problemset/all/";
-  }
-
   return null;
 }

@@ -121,9 +121,9 @@ export default async function OASectionPage({ params }: PageProps) {
                 <ShieldAlert className="h-7 w-7" />
               </div>
               <div className="space-y-1">
-                <p className="font-semibold text-white">Content coming soon</p>
+                <p className="font-semibold text-white">Roadmap in progress</p>
                 <p className="text-muted-foreground text-sm">
-                  Problems for this section have not been mapped yet.
+                  We are curating high-quality OA problems for this section. Check back soon!
                 </p>
               </div>
             </div>

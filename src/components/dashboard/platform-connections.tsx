@@ -68,14 +68,14 @@ export function PlatformConnections({
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
-          <div className="flex items-start gap-2 rounded border border-rose-500/20 bg-rose-500/10 p-3 text-sm text-rose-500">
+          <div className="flex items-start gap-2 rounded border border-white/10 bg-white/5 p-3 text-sm text-slate-400">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="flex items-center gap-2 rounded border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-500">
+          <div className="flex items-center gap-2 rounded border border-white/10 bg-white/5 p-3 text-sm text-accent">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             <span>{successMsg}</span>
           </div>
@@ -104,13 +104,13 @@ export function PlatformConnections({
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground text-sm">
               Connected as{" "}
-              <span className="font-medium text-emerald-400">
+              <span className="font-medium text-accent">
                 {connectedHandle}
               </span>
             </span>
             <Button
               variant="ghost"
-              className="text-rose-500 hover:bg-rose-500/10 hover:text-rose-400"
+              className="text-slate-400 hover:text-white hover:bg-white/5"
               onClick={handleDisconnect}
               disabled={isPending}
               title="Disconnect Codeforces"

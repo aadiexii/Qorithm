@@ -1,172 +1,110 @@
 # [Goal Description]
 
-Three changes in one pass:
+Polish three existing features to make them production-ready for v1:
 
-1. **Redesign dashboard** — minimal centered layout (Option C) replacing the current left-rail + POTD layout
-2. **POTD Codeforces-only** — filter daily challenge to only recommend Codeforces problems, remove LeetCode fallback
-3. **Full `/problems` cleanup** — delete the route, remove all `revalidatePath("/problems")` calls, move shared components out of `components/problems/`, update redirects
-
-## User Review Required
-
-> [!CAUTION]
-> This pass deletes routes and reworks core UI. Back up the DB schema first — only the route layer and components change, not the `problems` database table (still used by sheets).
-
-> [!WARNING]
-> `components/problems/problem-actions.tsx` is used by sheet section pages. Must be moved, not deleted. `components/problems/pagination-controls.tsx` is used by admin users page. Must be moved, not deleted.
+1. **OA pages** — handle empty/coming-soon state gracefully since there are no real problems yet
+2. **Settings page** — clean up UI, improve the Codeforces connection flow
+3. **Admin OA management** — strengthen seed script with more companies/sections/problems
 
 ## Proposed Changes
 
-### Part 1: Dashboard minimal redesign (`src/app/(app)/dashboard/page.tsx`)
+### Part 1: OA pages — Coming Soon state (`src/app/(public)/OA/`)
 
-Replace the current layout (left rail with name/platforms/stats/settings + main POTD card) with a centered single-column minimal layout:
+**1a: `/OA/page.tsx`** — The empty state (lines 30-39) already looks decent. If `companiesList` is empty (no seeded data), the page shows a clean "coming soon" state. Keep as-is.
 
-```
-                    [Logo] Qorithm.
+**1b: `/OA/[company]/page.tsx`** — The company roadmap page. If a company has 0 sections, `CompanyRoadmap` component should show an empty state instead of a blank page. Add check after `getCompanyBySlug()`:
 
-           Shivam · CF: shivam_o · 42 solved
+If `sections.length === 0`, show a centered "Roadmap being curated" message instead of rendering `CompanyRoadmap`.
 
-        ┌──────── Daily Challenge ────────────┐
-        │  CF · Rating: 800                   │
-        │  Two Sum                             │
-        │  [Solve Now → external]  [Note]     │
-        │  Recommendation: Based on your...    │
-        └─────────────────────────────────────┘
+**1c: `/OA/[company]/[section]/page.tsx`** — Already has a "Content coming soon" empty state for no problems (lines 118-129). It's fine.
 
-        ┌───── Sheet ─────┐  ┌────── OA ──────┐
-        │  30 solved      │  │  12 solved      │
-        │  [Continue]     │  │  [Continue]      │
-        └─────────────────┘  └─────────────────┘
-```
-
-Implementation details:
-- Remove `<aside>` left rail entirely (lines 36-86 in current page.tsx) — name, platforms, progress stats, settings link, ConnectionBadge, StatLine
-- Show user info in a single compact header line: `"{firstName} · CF: {handle} · {totalSolved} solved"`
-- Keep POTD card centered as main content, but remove the green glow/difficulty badges — use minimal styling matching the app palette
-- Add a new `grid md:grid-cols-2` section below POTD with two cards:
-  - **Sheet card**: shows `getSheetSolvedCount()` result, CTA link to `/sheet`
-  - **OA card**: shows `getOASolvedCount()` result, CTA link to `/OA`
-- Both cards use `bg-[#0a0a0a]/95`, `border-white/10`, `text-slate-200/400`
-
-**New server actions needed in `components/actions/dashboard-actions.ts`:**
-```ts
-export async function getDashboardStats(): Promise<{
-  totalSolved: number;
-  sheetSolved: number;
-  oaSolved: number;
-  codeforcesHandle: string | null;
-}>
-```
-- `totalSolved` comes from existing `getUserProgressStats()`
-- `sheetSolved` = count of solved userProblemStates where problemId exists in `sheet_section_problems`
-- `oaSolved` = count of solved userProblemStates where problemId exists in `company_section_problems` (or count from a separate `oa_user_problem_states` table if OA has its own tracking)
-
-OR simpler for v1 — just count total solved from `userProblemStates` for now and show it. Sheet vs OA split can come later when OA has its own tracking.
-
-**Cleanup:**
-- Remove `src/app/(app)/dashboard/rating-rail.tsx` if unused elsewhere
-- Remove `ConnectionBadge` and `StatLine` helper components from page.tsx (lines 97-130)
+Update the empty state copy slightly to make it feel intentional:
+- Title: "Roadmap in progress"
+- Description: "We are curating high-quality OA problems for this section. Check back soon!"
 
 ---
 
-### Part 2: POTD — Codeforces only (`src/components/actions/potd-actions.ts`)
+### Part 2: Settings page polish (`src/app/(app)/settings/page.tsx` + `src/components/dashboard/platform-connections.tsx`)
 
-In `getTodayChallenge()` (line 84-95), add an `and(eq(problems.platform, "codeforces"))` filter to the rating-based problem query:
+**2a: Settings page layout**
 
-```ts
-const [problem] = await db
-  .select({ id: problems.id })
-  .from(problems)
-  .where(
-    and(
-      eq(problems.platform, "codeforces"),          // ← ADD THIS
-      sql`COALESCE(${problems.rating}, ${problems.externalDifficulty}) >= ${minRating}`,
-      sql`COALESCE(${problems.rating}, ${problems.externalDifficulty}) <= ${minRating}`,
-      notInArray(problems.id, solvedQuery),
-    ),
-  )
-  .orderBy(sql`RANDOM()`)
-  .limit(1);
-```
+Keep the current structure but improve spacing and visual hierarchy:
+- Remove the uppercase "SETTINGS" label (line 23-25) — redundant, "Account settings" is clear enough
+- Change heading to: "Settings" (clean, no "Account settings")
+- Subtitle: "Manage your platform connections and account preferences."
+- Add a divider below the heading
+- The `PlatformConnections` card should have max-w-md to feel more focused
 
-Also in `src/utils/problem-url.ts`, remove lines 42-45 (the LeetCode fallback that returns `"https://leetcode.com/problemset/all/"`):
+**2b: PlatformConnections component**
 
-```ts
-// DELETE this block:
-if (platform === "custom" && source.toLowerCase().includes("leetcode")) {
-  return "https://leetcode.com/problemset/all/";
-}
-```
+Current issues:
+- Success/error messages use emerald/rose colors — keep minimal palette (no green/rose)
+- The "Connected as" handle shows in `text-emerald-400` — change to `text-accent`
+- The Disconnect button is `text-rose-500` — change to `text-slate-400 hover:text-white`
+- The Connect button should use the app's accent color consistently
+
+Replace emerald/rose colors:
+- Error banner: `border-rose-500/20 bg-rose-500/10 text-rose-500` → `border-white/10 bg-white/5 text-slate-400`
+- Success banner: `border-emerald-500/20 bg-emerald-500/10 text-emerald-500` → `border-white/10 bg-white/5 text-accent`
+- Connected handle: `text-emerald-400` → `text-accent`
+- Disconnect button: `text-rose-500` → `text-slate-400 hover:text-white`
 
 ---
 
-### Part 3: Full `/problems` cleanup
+### Part 3: Strengthen seed script (`scripts/seed-oa.ts`)
 
-#### 3a: Delete route directories
-- `src/app/(public)/problems/` — entire directory tree (the catalog page, search/filter UI, all subfiles)
-- `src/app/admin/problems/` — entire directory (already planned in admin cleanup)
+Add more companies, sections, and problems. Current seed has 3 companies, 2 sections each, 2 problems each. Expand to:
 
-#### 3b: Move shared components out of `components/problems/`
-This directory has 2 files that are used by other features:
+**Companies (keep existing + add):**
+- Google (Hard) — existing
+- Meta (Medium) — existing
+- Amazon (Medium) — existing
+- **Microsoft (Medium)** — new: arrays, trees, design
+- **Netflix (Hard)** — new: system design, concurrency
+- **Apple (Medium)** — new: strings, DP, OS concepts
 
-1. **`components/problems/problem-actions.tsx`** — used by `src/app/(public)/sheet/[slug]/page.tsx` (line 23). Move to `components/sheet/problem-actions.tsx` and update the import in the sheet page.
+**Sections per company** — increase from 2 to 3:
 
-2. **`components/problems/pagination-controls.tsx`** — used by `src/components/users/users-client.tsx` (line 24). Move to `components/shared/pagination-controls.tsx` (create `components/shared/` if it doesn't exist) and update the import in users-client.tsx.
+Google:
+1. Graphs & Trees
+2. Dynamic Programming
+3. **Math & Logic** (new — 2 problems)
 
-After both files are moved, **delete the `src/components/problems/` directory**.
+Meta:
+1. Arrays & Strings
+2. Binary Search & Window
+3. **Recursion & Backtracking** (new — 2 problems)
 
-#### 3c: Remove `revalidatePath("/problems")` from server actions
+Amazon:
+1. Heaps & Priority Queues
+2. Linked Lists & Stacks
+3. **Greedy & Intervals** (new — 2 problems)
 
-**`src/components/actions/tracking-actions.ts`** (3 occurrences):
-- Line 122: `revalidatePath("/problems")` — remove
-- Line 161: `revalidatePath("/problems")` — remove
-- Line 193: `revalidatePath("/problems")` — remove
-Keep all `revalidatePath("/dashboard")` calls.
+Microsoft:
+1. Arrays & Sorting
+2. Trees & BST
+3. Object-Oriented Design
 
-**`src/components/actions/topic-actions.ts`** (3 occurrences):
-- Line 73: `revalidatePath("/problems")` — remove
-- Line 125: `revalidatePath("/problems")` — remove
-- Line 158: `revalidatePath("/problems")` — remove
-Keep all `revalidatePath("/admin/topics")` calls.
+Netflix:
+1. System Design Basics
+2. Concurrency & Threading
 
-**`src/components/actions/admin-actions.ts`** (10 occurrences):
-- Line 125: `revalidatePath("/admin/problems")`
-- Line 126: `revalidatePath("/problems")`
-- Line 212: `revalidatePath("/admin/problems")`
-- Line 213: `revalidatePath("/problems")`
-- Line 235: `revalidatePath("/admin/problems")`
-- Line 236: `revalidatePath("/problems")`
-- Line 262: `revalidatePath("/admin/problems")`
-- Line 263: `revalidatePath("/problems")`
-- Line 431: `revalidatePath("/admin/problems")`
-- Line 432: `revalidatePath("/problems")`
+Apple:
+1. String Manipulation
+2. Dynamic Programming
 
-Remove ALL of these — both `/admin/problems` and `/problems` revalidations. If admin-actions.ts still has functions that only manage CP problems, consider deleting the entire admin-actions.ts file or keeping functions without revalidation.
+**Problems** — add 2 realistic LeetCode problems per new section. Each with real LeetCode URL, correct difficulty, and appropriate title.
 
-#### 3d: Update redirect in topics page
-`src/app/(public)/topics/page.tsx` line 10:
-```ts
-redirect("/problems");   // → change to:
-redirect("/sheet");
-```
-
-#### 3e: Footer update
-`src/app/page.tsx` (the landing page footer, around line 231):
-```tsx
-<Link href="/problems">Problems</Link>   // → change to:
-<Link href="/OA">OA</Link>
-```
+The script should be idempotent (`ON CONFLICT` upserts).
 
 ---
 
-### Part 4: Verification
+### Verification
 
-1. `npm run typecheck` — fix all import path errors from moving components
-2. `npm run lint` — fix lint issues
-3. `npm run build` — production build succeeds
-4. Manual checks:
-   - Dashboard loads centered, shows user info + POTD + Sheet/OA cards
-   - POTD only recommends Codeforces problems
-   - `/problems` 404s (route deleted)
-   - `/topics` redirects to `/sheet`
-   - Sheet section pages still work and show problem-actions
-   - Admin users page still works and shows pagination-controls
+1. Run `npm run db:seed` (or the seed script directly) — verify no errors
+2. Run `npm run typecheck` — no errors
+3. Navigate `/OA` — shows company grid with 6 companies
+4. Navigate `/OA/google` — shows Google sections
+5. Navigate `/OA/google/graphs-and-trees` — shows problems
+6. Admin: `/admin/oa` — all companies, sections, problems visible
+7. `/settings` — clean layout, CF connect/disconnect works, no green/rose colors

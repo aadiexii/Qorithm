@@ -107,7 +107,7 @@ Use those scripts only when reconciling an existing database that cannot cleanly
 ```
 src/
 ├── app/
-│   ├── (public)/   # Browse route group (/problems, /sheet, /leaderboard, /topics)
+│   ├── (public)/   # Browse route group (/OA, /sheet, /topics)
 │   ├── (auth)/     # Clerk auth pages (/sign-in, /sign-up)
 │   ├── (app)/      # Auth-gated user pages (/dashboard, /settings)
 │   ├── admin/      # Strict Admin dashboard (KPIs, Users, Content Ops)
@@ -116,11 +116,11 @@ src/
 ├── components/
 │   ├── actions/    # Server actions barrel (re-exports actions)
 │   ├── admin/      # Admin domain components
-│   ├── Common/     # Shared reusable components
 │   ├── dashboard/  # Dashboard page components
 │   ├── leaderboard/# Leaderboard page components
 │   ├── molecules/  # shadcn/radix primitives (from components/ui)
-│   ├── problems/   # Problems table, creation & filters
+│   ├── oa/         # OA roadmap components
+│   ├── shared/     # Shared reusable components
 │   ├── sheet/      # Sheet details & mappings
 │   ├── site/       # Site chrome (header, backgrounds)
 │   ├── topics/     # Topics lists & creation
@@ -161,7 +161,7 @@ Qorithm uses the **Adapter Pattern** to sync external solves.
 
 Before announcing a launch, verify the following:
 
-1. **Public Reads**: Navigate to `/problems` in an incognito window. Ensure published problems load.
+1. **Public Reads**: Navigate to `/sheet` in an incognito window. Ensure published problems load.
 2. **Auth-Gated Interactions**: Attempt to click the bookmark star on a problem while signed out. Ensure the inline React state auth-gate popup appears to redirect you to Clerk.
 3. **Protected Routes**: Attempt to navigate directly to `/dashboard` while signed out. Ensure you are redirected away.
 4. **Admin Promotions**: Sign in with a standard account, attempt to visit `/admin`. Ensure you are rejected. Upgrade your role in SQL, refresh, and verify the admin KPI dashboard mounts.

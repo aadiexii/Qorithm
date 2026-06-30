@@ -5,6 +5,9 @@ export interface PlatformAdapter {
     rating: number | null;
     avatar: string | null;
   }>;
+  fetchSubmissions?(handle: string): Promise<
+    { problem: { contestId: number; index: string }; verdict: string }[]
+  >;
 }
 
 export * from "./codeforces";

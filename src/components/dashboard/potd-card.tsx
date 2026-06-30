@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/molecules/card";
-import { ExternalLink, CalendarClock, Trophy, Zap } from "lucide-react";
+import { ExternalLink, CalendarClock, CheckCircle2, Zap } from "lucide-react";
 import { buildProblemUrl } from "@/utils/problem-url";
 
 type POTD = {
@@ -90,11 +90,7 @@ export function PotdCard({
 
   return (
     <Card className="border-border/60 from-card/85 to-card/45 relative overflow-hidden bg-gradient-to-br">
-      <div
-        className={`pointer-events-none absolute -top-20 -right-20 h-60 w-60 rounded-full opacity-15 blur-3xl ${
-          isSolved ? "bg-emerald-500" : "bg-accent"
-        }`}
-      />
+      <div className="pointer-events-none absolute -top-20 -right-20 h-60 w-60 rounded-full opacity-15 blur-3xl bg-accent" />
 
       <CardHeader className="px-5 pt-4 pb-3">
         <div className="flex items-center justify-between gap-4">
@@ -116,7 +112,7 @@ export function PotdCard({
       <CardContent className="px-5 pt-0 pb-5">
         <div className="border-border/40 bg-background/40 group relative overflow-hidden rounded-lg border p-4">
           {isSolved && (
-            <div className="absolute inset-0 z-0 border-l-2 border-emerald-500 bg-emerald-500/5" />
+            <div className="absolute inset-0 z-0 border-l-2 border-accent/50 bg-accent/5" />
           )}
           <div className="relative z-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
@@ -133,7 +129,7 @@ export function PotdCard({
               <h3
                 className={`text-base leading-tight font-bold ${
                   isSolved
-                    ? "text-emerald-400"
+                    ? "text-accent"
                     : "text-foreground group-hover:text-accent transition-colors"
                 }`}
               >
@@ -143,8 +139,8 @@ export function PotdCard({
 
             <div className="shrink-0">
               {isSolved ? (
-                <div className="flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300">
-                  <Trophy className="h-3.5 w-3.5" /> Solved
+                <div className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-accent">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Solved
                 </div>
               ) : solveUrl ? (
                 <a

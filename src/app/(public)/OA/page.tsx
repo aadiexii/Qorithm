@@ -1,6 +1,7 @@
-import { getCompanies } from "@/components/actions/oa-actions";
-import { CompanyCard } from "@/components/oa/company-card";
 import { Briefcase } from "lucide-react";
+import { getCurrentSession } from "@/services/Auth/auth";
+import { getTodayChallenge } from "@/components/actions/potd-actions";
+import { PotdBanner } from "@/components/dashboard/potd-banner";
 
 export const metadata = {
   title: "OA Roadmaps | Qorithm",
@@ -9,7 +10,8 @@ export const metadata = {
 };
 
 export default async function OAPage() {
-  const companiesList = await getCompanies();
+  const session = await getCurrentSession();
+  const potd = session ? await getTodayChallenge() : null;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12">
@@ -27,31 +29,22 @@ export default async function OAPage() {
         </div>
       </div>
 
-      {companiesList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-white/5 bg-white/5 p-8 py-20 text-center">
-          <Briefcase className="h-12 w-12 animate-pulse text-neutral-600" />
-          <h3 className="mt-4 text-base font-semibold text-neutral-400">
-            No company roadmaps available yet
-          </h3>
-          <p className="mt-2 max-w-xs text-sm text-neutral-500">
-            We are currently curating and verifying roadmaps. Check back soon!
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {companiesList.map((company) => (
-            <CompanyCard
-              key={company.id}
-              name={company.name}
-              slug={company.slug}
-              logo={company.logo}
-              difficulty={company.difficulty}
-              description={company.description}
-              sectionCount={company.sectionCount}
-            />
-          ))}
-        </div>
-      )}
+      <PotdBanner
+        potdTitle={potd?.title}
+        isSolved={potd?.status === "completed"}
+      />
+
+      {/* Coming Soon — always shown */}
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-white/5 bg-white/5 p-8 py-20 text-center">
+        <Briefcase className="h-12 w-12 animate-pulse text-neutral-600" />
+        <h3 className="mt-4 text-base font-semibold text-neutral-400">
+          Company roadmaps coming soon
+        </h3>
+        <p className="mt-2 max-w-xs text-sm text-neutral-500">
+          We are curating company-wise PYQs and will release them soon. Stay
+          tuned!
+        </p>
+      </div>
     </main>
   );
 }
