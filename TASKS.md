@@ -28,6 +28,13 @@
   - [x] Consolidated shared ActionState type in `src/types/admin.ts` and set up a server action barrel export in `src/components/actions/index.ts`.
 - [x] **Phase 8**: Docs Reconciliation Pass.
   - [x] Reconciled README.md, ARCH.md, PRD.md, DEPLOY.md, TASKS.md, LEARNINGS.md, and PROMPTS.md against the new Nova9-style layered layout, Next.js 16 proxy middlewares, and updated integration paths.
+- [x] **Phase 9**: Dashboard Sync, OA & Settings Polish.
+  - [x] Moved platform connection flow directly inline on the user dashboard.
+  - [x] Polished and simplified `/settings` to focus on handle/key settings.
+  - [x] Integrated real-time Codeforces-based submission checking and streak validation checks on the main dashboard.
+  - [x] Standardized company OA page roadmaps with curated lists, placeholders, and proper "coming soon" layouts.
+  - [x] Expanded OA data seeding to cover 6 companies, 17 sections, and 34 problems.
+  - [x] Cleared codebase of dead/unused components, routes (e.g. `/problems`), and actions.
 
 ## Remaining Roadmap
 

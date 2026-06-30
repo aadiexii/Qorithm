@@ -89,3 +89,11 @@
 
 - Documentation must be checked against `package.json`, `src/app`, `src/components`, `src/services/Database/schema`, `src/services/Platforms`, and `scripts/` before claiming framework version, database provider, route availability, or feature status.
 - Keep deployment docs provider-neutral: this repo uses PostgreSQL through Drizzle server queries, not a Supabase client path. If Supabase is the backing provider, its RLS/API posture is separate deployment hardening.
+
+## Sprint 7B — Dashboard Integration & OA Polish
+
+- **Inline Dashboard Connections**: Moving the platform (Codeforces) connection status directly to the primary user dashboard (`CfConnectInline`) reduces onboarding friction, making the streak counter and POTD card immediately actionable.
+- **Graceful Roadmap Placeholders**: Companies in `/OA` with 0 sections are caught and handled gracefully via clean centered placeholders ("Roadmap being curated") instead of rendering blank pages or crashing.
+- **Strict Seeding Idempotency**: When seeding relational database entities like companies, sections, and section-problems in `seed-oa.ts`, using `ON CONFLICT` and checking for existence ensures the seed script is safe to run multiple times without causing duplicate keys or DB bloat.
+- **Codebase Dead Weight**: Deleting unused components, routes (such as `/problems`), and actions helps prevent "broken windows" in the codebase, ensuring that only actively maintained and fully functional paths are compiled and checked by CI lint/build tasks.
+

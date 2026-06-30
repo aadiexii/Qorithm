@@ -5,11 +5,11 @@ Master algorithms systematically. Qorithm is a modern platform designed to strea
 ## Key Features
 
 - **Curated Problem Sheets**: Follow structured tracks to master algorithms step-by-step.
-- **Unified Problem Catalog**: Filter problems by search and rating.
-- **Progress Dashboard**: Track your solved problems, attempt history, bookmarks, and personalized Daily Challenge (POTD).
-- **Problem Notes**: Maintain private markdown notes for any problem in the catalog.
-- **Platform Integrations**: Connect Codeforces and AtCoder handles, then sync solves into your Qorithm progress.
-- **Professional Admin Console**: KPI-driven admin view for managing users, problems, topics, and viewing global activity.
+- **Company OA Roadmaps**: Track Online Assessment (OA) roadmap progress for tech giants (Google, Amazon, Meta, Netflix, etc.) with custom company mapping.
+- **Progress Dashboard**: Time-based greetings, personal statistics, connected Codeforces credentials, and daily streaks.
+- **Codeforces Integration**: Link your handle inline on the dashboard to sync solve histories and verify Daily Challenges (POTD).
+- **Problem Notes**: Maintain private markdown notes for any problem in learning tracks or roadmaps.
+- **Professional Admin Console**: KPI-driven admin view for managing users, sheet mappings, OA roadmap details, and viewing global activity.
 
 ## Tech Stack
 
@@ -102,7 +102,7 @@ src/
 ├── services/
 │   ├── Auth/       # Clerk auth guards, env validation
 │   ├── Database/   # Drizzle client + schema definitions
-│   └── Platforms/  # CF + AtCoder sync adapters
+│   └── Platforms/  # Codeforces sync adapter
 ├── types/          # Domain types and validation schemas
 ├── utils/          # Pure helpers (Tailwind, problem URL generators)
 └── proxy.ts        # Clerk middleware route protection proxy

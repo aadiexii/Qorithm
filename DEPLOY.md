@@ -31,19 +31,19 @@ npm run db:push
 
 `drizzle.config.ts` loads `.env.local`, uses `src/services/Database/schema/index.ts`, and connects via `DATABASE_URL`.
 
-### 4. Seed starter data (optional)
+### 4. Seed starter data (idempotent, optional)
+
+To seed CP topics, sheet sections, and Codeforces/custom problems:
 
 ```bash
 npm run db:seed
 ```
 
-This seeds:
+To seed OA (Online Assessment) company roadmaps, sections, and problems:
 
-- 15 topics (arrays, DP, graphs, etc.)
-- 27 starter sheet sections
-- 25 Codeforces problems (real contest IDs for sync demo)
-- 75+ custom problems (LeetCode-style)
-- All problems are published and ready to browse. The script is idempotent.
+```bash
+npx tsx scripts/seed-oa.ts
+```
 
 ### 5. Import curriculum dataset (optional, recommended for full catalog)
 
@@ -53,7 +53,7 @@ npm run curriculum:import
 npm run curriculum:topics:backfill
 ```
 
-This flow builds `data/curriculum/sections.csv` and `data/curriculum/problems.csv` from Codeforces and AtCoder sources, imports the expected 30 sections / 930 problems, then backfills `problem_topics` mappings from curriculum tags. If the CSVs are already checked in and current, start at `curriculum:import`.
+This flow builds `data/curriculum/sections.csv` and `data/curriculum/problems.csv` from Codeforces and AtCoder sources, imports the curriculum tracks, then backfills `problem_topics` mappings from curriculum tags. If the CSVs are already checked in, start at `curriculum:import`.
 
 ### 6. Bootstrap first admin user
 
@@ -100,7 +100,7 @@ Manual recovery utilities:
 
 Use those scripts only when reconciling an existing database that cannot cleanly run Drizzle migrations.
 
-> **Security Note:** The application does not use a Supabase client or browser-side database access. Authorization is enforced in server code through Clerk session checks, `requireAdmin()`, and Drizzle queries. If the backing Postgres provider is Supabase and RLS is enabled, keep direct Supabase API access locked down separately; server-side Drizzle is the intended app access path.
+> **Security Note:** The application does not use browser-side database access. Authorization is enforced in server code through Clerk session checks, `requireAdmin()`, and Drizzle queries. If the backing Postgres provider is Supabase and RLS is enabled, keep direct Supabase API access locked down separately; server-side Drizzle is the intended app access path.
 
 ## Architecture Overview
 
@@ -110,21 +110,19 @@ src/
 │   ├── (public)/   # Browse route group (/OA, /sheet, /topics)
 │   ├── (auth)/     # Clerk auth pages (/sign-in, /sign-up)
 │   ├── (app)/      # Auth-gated user pages (/dashboard, /settings)
-│   ├── admin/      # Strict Admin dashboard (KPIs, Users, Content Ops)
-│   ├── layout.tsx  # Root layout
-│   └── page.tsx    # Landing page
+│   └── admin/      # Strict Admin dashboard (KPIs, Users, Content Mappings, OA Console)
 ├── components/
 │   ├── actions/    # Server actions barrel (re-exports actions)
-│   ├── admin/      # Admin domain components
-│   ├── dashboard/  # Dashboard page components
+│   ├── admin/      # Admin page sub-components
+│   ├── dashboard/  # Dashboard page components (streak buttons, inline CF connects)
 │   ├── leaderboard/# Leaderboard page components
 │   ├── molecules/  # shadcn/radix primitives (from components/ui)
-│   ├── oa/         # OA roadmap components
-│   ├── shared/     # Shared reusable components
+│   ├── oa/         # OA roadmap page components
+│   ├── shared/     # Shared reusable components (pagination)
 │   ├── sheet/      # Sheet details & mappings
 │   ├── site/       # Site chrome (header, backgrounds)
-│   ├── topics/     # Topics lists & creation
-│   ├── tracking/   # Solved/tried state overlays and dialogs
+│   ├── topics/     # Topics edit and delete actions
+│   ├── tracking/   # Solved/tried state overlays and notes dialogs
 │   └── users/      # Users lists components
 ├── constants.ts    # Centralized parameters (default rating, API bases, etc.)
 ├── hooks/          # Custom React hooks
@@ -132,8 +130,8 @@ src/
 ├── services/       # Core Integration & Storage services
 │   ├── Auth/       # Clerk-backed auth utils (auth.ts, env.ts)
 │   ├── Database/   # Drizzle client (client.ts) & schemas (schema/*)
-│   └── Platforms/  # Codeforces & AtCoder sync adapters
-├── types/          # Centralized schema models and types
+│   └── Platforms/  # Codeforces sync adapter (codeforces.ts)
+├── types/          # Centralized schema models and validation interfaces
 ├── utils/          # Pure utility functions (cn helper, problem-url builders)
 └── proxy.ts        # Next.js 16 Clerk routing & auth protection middleware proxy
 ```
@@ -142,15 +140,15 @@ src/
 
 ## Platform Integrations
 
-Qorithm uses the **Adapter Pattern** to sync external solves.
+Qorithm uses a service adapter to sync external solves.
 
 - **Codeforces**: Utilizes the official Codeforces API (`/user.info`, `/user.status`).
-- **AtCoder**: Utilizes the community Kenkoooo API.
-  Users link their handles via `/settings`, then use the sync actions to import matched solves into their dashboard and streak state.
+  Users link their handles via the main dashboard or `/settings`, then use the sync actions to import matched solves into their dashboard and streak state.
 
 ## Script Reference
 
 - `scripts/seed.ts`: seeds starter topics, sheet sections, Codeforces problems, and custom problems.
+- `scripts/seed-oa.ts`: seeds 6 top-tier company roadmaps, 17 roadmap sections, and 34 verified OA problems.
 - `scripts/build-qorithm-curriculum.mjs`: builds curriculum CSV/summary files in `data/curriculum/` from Codeforces and AtCoder APIs.
 - `scripts/import-curriculum.ts`: imports built curriculum sections/problems and section mappings into Postgres.
 - `scripts/backfill-problem-topics.ts`: creates missing topics and backfills `problem_topics` mappings from curriculum tags.
@@ -161,7 +159,7 @@ Qorithm uses the **Adapter Pattern** to sync external solves.
 
 Before announcing a launch, verify the following:
 
-1. **Public Reads**: Navigate to `/sheet` in an incognito window. Ensure published problems load.
-2. **Auth-Gated Interactions**: Attempt to click the bookmark star on a problem while signed out. Ensure the inline React state auth-gate popup appears to redirect you to Clerk.
+1. **Public Reads**: Navigate to `/sheet` and `/OA` in an incognito window. Ensure tracks and companies load, displaying "Coming Soon" states properly.
+2. **Auth-Gated Interactions**: Attempt to click the bookmark star or solve checkmark on a problem while signed out. Ensure the inline React state auth-gate popup appears to redirect you to Clerk.
 3. **Protected Routes**: Attempt to navigate directly to `/dashboard` while signed out. Ensure you are redirected away.
 4. **Admin Promotions**: Sign in with a standard account, attempt to visit `/admin`. Ensure you are rejected. Upgrade your role in SQL, refresh, and verify the admin KPI dashboard mounts.
