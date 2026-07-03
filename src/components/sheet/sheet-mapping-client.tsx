@@ -141,7 +141,7 @@ export function SheetMappingClient({ sections }: { sections: Section[] }) {
                 <div className="flex items-center gap-2 text-xs">
                   <span>{section.problemCount} problems</span>
                   {section.problemCount === 0 && (
-                    <span className="rounded bg-rose-500/20 px-1.5 py-0.5 text-[10px] font-bold text-rose-500">
+                    <span className="rounded bg-white/5 border border-white/10 px-1.5 py-0.5 text-[10px] font-bold text-slate-400">
                       Empty
                     </span>
                   )}

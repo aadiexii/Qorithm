@@ -80,7 +80,7 @@
 
 - **Next.js Route Groups**: Folders wrapped in parentheses (`(public)`, `(auth)`, `(app)`) are a pure organizational convention — they group related routes for layout and cognitive clarity without altering any URLs. The `/sheet` URL is identical whether the file lives at `app/sheet/page.tsx` or `app/(public)/sheet/page.tsx`.
 - **Admin Stays Flat**: The `admin/` directory was intentionally kept as a flat route (not wrapped in a group) because it has its own guarded layout. Grouping it would add no value and could introduce subtle layout hierarchy issues.
-- **Proxy Naming Convention**: Retained `src/proxy.ts` because Next.js 16 officially deprecates the `middleware.ts` filename in favor of `proxy.ts`. Building and deploying with `proxy.ts` works cleanly and complies with the latest conventions.
+- **Middleware Naming Convention**: Renamed `src/proxy.ts` to `src/middleware.ts` because Next.js standard middleware convention relies strictly on `middleware.ts` running at the root of the app to intercept requests.
 - **Renamed `src/server/` to `src/services/Auth/`**: Consolidated server-side Auth (`src/services/Auth/auth.ts`) and Env parsing (`src/services/Auth/env.ts`) into the new `services/` directory layer.
 - **Flat Server Actions Barrel**: Added `src/components/actions/index.ts` as a centralized server action barrel export. This lets page and client components import server actions flatly while maintaining clean, separate implementation files.
 - **Services and Types directories**: The `src/services/` and `src/types/` folders are no longer placeholders. They now actively host core integration services (Database, Platforms, Auth) and domain schemas / types, respectively.

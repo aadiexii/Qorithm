@@ -133,7 +133,7 @@ export function UsersClient({ result }: { result: ListUsersResult }) {
                           }).format(new Date(user.lastActive))
                         : "-"}
                     </TableCell>
-                    <TableCell className="text-right font-medium text-emerald-500">
+                    <TableCell className="text-right font-medium text-amber-400">
                       {user.totalSolved}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-right font-medium">

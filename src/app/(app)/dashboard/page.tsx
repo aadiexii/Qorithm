@@ -93,12 +93,11 @@ export default async function DashboardPage() {
             <span className="text-xs text-slate-400 ml-1.5">solved</span>
           </div>
           <div className="mt-auto">
-            <Link
-              href="/OA"
-              className="inline-flex h-8 w-full items-center justify-center rounded-lg bg-white/10 px-3 text-xs font-semibold text-white transition-colors hover:bg-white/20"
+            <span
+              className="inline-flex h-8 w-full items-center justify-center rounded-lg bg-white/5 border border-white/10 px-3 text-xs font-semibold text-slate-500 cursor-not-allowed"
             >
-              Continue
-            </Link>
+              Coming Soon
+            </span>
           </div>
         </div>
       </div>

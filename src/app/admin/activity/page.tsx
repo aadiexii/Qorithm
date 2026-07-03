@@ -41,7 +41,7 @@ export default async function AdminActivityPage() {
                 >
                   <div className="border-background bg-muted text-muted-foreground z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border shadow md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                     {event.type === "signup" ? (
-                      <UserPlus className="h-4 w-4 text-emerald-500" />
+                      <UserPlus className="h-4 w-4 text-amber-400" />
                     ) : (
                       <CheckCircle className="h-4 w-4 text-purple-500" />
                     )}

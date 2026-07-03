@@ -664,7 +664,7 @@ export default function AdminOAPage() {
         <Card className="border-white/10 bg-[#0a0a0a]/95 lg:col-span-4">
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-base">Companies</CardTitle>
-            <CardDescription>Select target target company</CardDescription>
+            <CardDescription>Select target company</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <div className="flex max-h-[500px] flex-col overflow-y-auto">
@@ -693,7 +693,7 @@ export default function AdminOAPage() {
                       onClick={() => handleToggleCompanyPublish(c)}
                       className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${
                         c.isPublished
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                          ? "bg-white/5 text-slate-400 border border-white/10"
                           : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
                       }`}
                     >
@@ -707,7 +707,7 @@ export default function AdminOAPage() {
                     </button>
                     <button
                       onClick={() => handleDeleteCompany(c.id)}
-                      className="text-slate-400 hover:text-rose-400 p-1"
+                      className="text-slate-400 hover:text-amber-400 p-1"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -775,7 +775,7 @@ export default function AdminOAPage() {
                       onClick={() => handleToggleSectionPublish(s)}
                       className={`rounded px-1.5 py-0.5 text-[9px] font-bold mr-1 ${
                         s.isPublished
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                          ? "bg-white/5 text-slate-400 border border-white/10"
                           : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
                       }`}
                     >
@@ -801,7 +801,7 @@ export default function AdminOAPage() {
                     </button>
                     <button
                       onClick={() => handleDeleteSection(s.id)}
-                      className="text-slate-400 hover:text-rose-400 p-1"
+                      className="text-slate-400 hover:text-amber-400 p-1"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -870,7 +870,7 @@ export default function AdminOAPage() {
                       </button>
                       <button
                         onClick={() => handleDeleteProblem(p.id)}
-                        className="text-slate-400 hover:text-rose-400 p-1 ml-1"
+                        className="text-slate-400 hover:text-amber-400 p-1 ml-1"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>

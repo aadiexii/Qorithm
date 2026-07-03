@@ -33,7 +33,7 @@ function StatusBadge({
   label: SheetSectionProgress["statusLabel"];
 }) {
   const styles: Record<SheetSectionProgress["statusLabel"], string> = {
-    Completed: "bg-green-500/20 text-green-400 border-green-500/30",
+    Completed: "bg-white/5 text-slate-400 border-white/10",
     "In Progress": "bg-amber-500/20 text-amber-400 border-amber-500/30",
     "Start now": "bg-white/5 text-slate-400 border-white/10",
   };
@@ -161,7 +161,7 @@ export default async function SheetPage() {
           </Card>
           <Card className="border-border/60 bg-card/70">
             <CardContent className="flex flex-col gap-1 p-5">
-              <span className="text-2xl font-bold tracking-tight text-green-400">
+              <span className="text-2xl font-bold tracking-tight text-slate-400">
                 {completedCount}
               </span>
               <span className="text-muted-foreground text-xs font-medium tracking-widest uppercase">
@@ -250,7 +250,7 @@ export default async function SheetPage() {
       {/* Footer hint */}
       {sections.length > 0 && (
         <p className="text-muted-foreground text-center text-sm">
-          <CheckCircle className="mr-1.5 inline-block h-4 w-4 text-green-500" />
+          <CheckCircle className="mr-1.5 inline-block h-4 w-4 text-slate-400" />
           Problems within each section open in the next phase.
         </p>
       )}

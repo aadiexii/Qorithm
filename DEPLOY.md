@@ -133,10 +133,10 @@ src/
 │   └── Platforms/  # Codeforces sync adapter (codeforces.ts)
 ├── types/          # Centralized schema models and validation interfaces
 ├── utils/          # Pure utility functions (cn helper, problem-url builders)
-└── proxy.ts        # Next.js 16 Clerk routing & auth protection middleware proxy
+└── middleware.ts   # Next.js Clerk routing & auth protection middleware proxy
 ```
 
-`src/proxy.ts` uses the Next.js 16 proxy middleware convention for Clerk route protection in this repo; it is retained in place of the older `middleware.ts` naming.
+`src/middleware.ts` uses the Next.js Clerk middleware for route protection.
 
 ## Platform Integrations
 

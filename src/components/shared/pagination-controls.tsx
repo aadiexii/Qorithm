@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback } from "react";
 
 import { Button } from "@/components/molecules/button";
@@ -16,14 +16,15 @@ export function PaginationControls({
 }: PaginationControlsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const goToPage = useCallback(
     (newPage: number) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", String(newPage));
-      router.push(`/problems?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
     },
-    [router, searchParams],
+    [router, searchParams, pathname],
   );
 
   if (totalPages <= 1) return null;

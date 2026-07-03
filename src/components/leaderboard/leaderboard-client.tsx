@@ -187,7 +187,7 @@ export function LeaderboardClient({
                         {entry.solvedCount}
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="font-mono text-lg font-bold text-emerald-400">
+                        <div className="font-mono text-lg font-bold text-amber-400">
                           {entry.score.toLocaleString()}
                         </div>
                       </TableCell>

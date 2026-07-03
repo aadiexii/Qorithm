@@ -105,7 +105,7 @@ src/
 │   └── Platforms/  # Codeforces sync adapter
 ├── types/          # Domain types and validation schemas
 ├── utils/          # Pure helpers (Tailwind, problem URL generators)
-└── proxy.ts        # Clerk middleware route protection proxy
+└── middleware.ts   # Clerk middleware route protection middleware
 ```
 
 The `data/` directory contains generated curriculum datasets (`sections.csv`, `problems.csv`, `summary.json`) consumed by the curriculum import/backfill scripts.

@@ -47,7 +47,7 @@ export function ProblemTrackingControls({
         disabled={isPending}
         className={`focus-visible:ring-ring inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed ${
           optimisticSolved
-            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+            ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
             : "border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground"
         } ${isPending ? "opacity-50" : ""}`}
       >

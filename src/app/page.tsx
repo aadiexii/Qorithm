@@ -112,12 +112,11 @@ export default async function HomePage() {
                 Practice company-wise PYQs curated by target company.
               </p>
               <div className="mt-auto">
-                <Link
-                  href="/OA"
-                  className="inline-flex h-9 w-full items-center justify-center rounded-md bg-white/10 px-4 text-xs font-semibold text-white transition-colors hover:bg-white/20"
+                <div
+                  className="inline-flex h-9 w-full items-center justify-center rounded-md bg-white/5 border border-white/10 px-4 text-xs font-semibold text-slate-500 cursor-not-allowed"
                 >
-                  Browse Roadmaps
-                </Link>
+                  Coming Soon
+                </div>
               </div>
             </div>
           </div>
@@ -209,9 +208,6 @@ export default async function HomePage() {
             <span>Qorithm</span>
           </div>
           <div className="flex gap-6 text-sm font-medium text-slate-500">
-            <Link href="/OA" className="transition-colors hover:text-slate-300">
-              OA
-            </Link>
             <Link
               href="/sheet"
               className="transition-colors hover:text-slate-300"

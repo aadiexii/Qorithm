@@ -60,7 +60,7 @@ src/
 │
 ├── utils/                # Pure utility functions (cn helper, problem-url builders)
 │
-└── proxy.ts              # Next.js 16 Clerk routing & auth protection middleware
+└── middleware.ts         # Next.js Clerk routing & auth protection middleware
 ```
 
 ## Route Groups
@@ -107,4 +107,4 @@ This project utilizes a layered architecture that groups components by role rath
 - **Route Separation**: All public read operations are isolated from management actions. Management routes live strictly under `/admin/*`.
 - **Server Guards**: Admin actions and layouts are strictly protected by a `requireAdmin()` server guard that performs server-side DB validation of the user's role before executing any mutation.
 - **Auth-Gated Mutations**: All progress tracking actions (e.g., toggling a bookmark) verify the user's active session. Unauthenticated interactions surface a non-blocking React state auth-gate to redirect users to Clerk.
-- **Middleware / Proxy**: `src/proxy.ts` uses Clerk middleware to protect `/dashboard`, `/settings`, and `/admin` at the edge. In Next.js 16, the standard convention is `proxy.ts` (deprecating the older `middleware.ts` file convention), which we use to protect auth-gated routes.
+- **Middleware**: `src/middleware.ts` uses Clerk middleware to protect `/dashboard`, `/settings`, and `/admin` at the edge, which we use to protect auth-gated routes.
