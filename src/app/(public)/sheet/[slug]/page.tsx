@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ShieldAlert } from "lucide-react";
+import type { Metadata } from "next";
 
 import { getCurrentSession } from "@/services/Auth/auth";
 import { getSheetSectionBySlug } from "@/components/actions/sheet-actions";
@@ -26,6 +27,17 @@ import { buildProblemUrl } from "@/utils/problem-url";
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const resolvedParams = await params;
+  const section = await getSheetSectionBySlug(resolvedParams.slug);
+  if (!section) return { title: "Section Not Found | Qorithm" };
+
+  return {
+    title: `${section.title} | Qorithm`,
+    description: section.description ?? `Practice problems for ${section.title}.`,
+  };
+}
 
 export default async function SheetSectionPage({ params }: Props) {
   const session = await getCurrentSession();

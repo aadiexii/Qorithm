@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { asc, eq } from "drizzle-orm";
+import type { Metadata } from "next";
 
 import { db } from "@/services/Database/client";
 import { sheetSections } from "@/services/Database/schema/sheet";
 import { DotGridBackground } from "@/components/site/dot-grid-background";
 import { getCurrentSession } from "@/services/Auth/auth";
+
+export const metadata: Metadata = {
+  title: "Qorithm - Master algorithms systematically",
+  description:
+    "Master algorithms systematically with curated learning tracks, company-wise PYQ roadmaps, and distraction-free competitive programming practice.",
+};
 
 async function getPublishedSectionsPreview(limit: number) {
   return db
