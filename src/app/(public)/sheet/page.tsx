@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import {
   ArrowRight,
   BookOpen,
@@ -22,6 +23,12 @@ import {
   CardDescription,
 } from "@/components/molecules/card";
 import type { SheetSectionProgress } from "@/types/sheet";
+
+export const metadata: Metadata = {
+  title: "CP Training Sheet | Qorithm",
+  description:
+    "Follow structured learning tracks to master competitive programming systematically. Track solves, monitor progress, and build algorithmic intuition.",
+};
 
 // ---------------------------------------------------------------------------
 // Sub-components (server-safe, no state)

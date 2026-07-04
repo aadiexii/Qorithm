@@ -96,3 +96,108 @@ body {
     );
   }
 }
+
+/* Clerk Custom Dark Mode overrides */
+.cl-rootBox {
+  color-scheme: dark;
+}
+.cl-card {
+  background-color: #161618 !important;
+  border: 1px solid rgba(245, 158, 11, 0.2) !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5), 0 0 15px rgba(245, 158, 11, 0.05) !important;
+}
+.cl-headerTitle {
+  color: #ffffff !important;
+}
+.cl-headerSubtitle {
+  color: #a1a1aa !important;
+}
+.cl-socialButtonsBlockButton {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+.cl-socialButtonsBlockButton:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+.cl-socialButtonsBlockButtonText {
+  color: #ffffff !important;
+}
+.cl-dividerLine {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+.cl-dividerText {
+  color: #71717a !important;
+}
+.cl-formFieldLabel {
+  color: #d4d4d8 !important;
+}
+.cl-formFieldInput {
+  background-color: #161618 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+.cl-formFieldInput:focus {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+.cl-formButtonPrimary {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+.cl-formButtonPrimary:hover {
+  opacity: 0.9 !important;
+}
+.cl-footerActionText {
+  color: #a1a1aa !important;
+}
+.cl-footerActionLink {
+  color: #ffffff !important;
+}
+.cl-footerActionLink:hover {
+  color: #fbbf24 !important;
+}
+.cl-identityPreviewText {
+  color: #ffffff !important;
+}
+.cl-identityPreviewEditButton {
+  color: #a1a1aa !important;
+}
+.cl-identityPreviewEditButton:hover {
+  color: #ffffff !important;
+}
+
+/* UserButton Popover custom overrides */
+.cl-userButtonPopoverCard {
+  background-color: #161618 !important;
+  border: 1px solid rgba(245, 158, 11, 0.2) !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 0 15px rgba(245, 158, 11, 0.05) !important;
+  margin-left: 40px !important;
+  
+  --clerk-color-foreground: #ffffff !important;
+  --clerk-color-muted-foreground: #a1a1aa !important;
+  --clerk-color-text: #ffffff !important;
+  --clerk-color-text-secondary: #a1a1aa !important;
+}
+.cl-userButtonPopoverCard * {
+  color: #ffffff !important;
+}
+.cl-userButtonPopoverCard .cl-userPreviewSecondaryIdentifier,
+.cl-userButtonPopoverCard .cl-userButtonPopoverActionButtonIcon {
+  color: #a1a1aa !important;
+}
+.cl-userButtonPopoverActionButton {
+  transition: all 0.2s ease !important;
+}
+.cl-userButtonPopoverActionButton:hover {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  --clerk-color-foreground: #fbbf24 !important;
+  --clerk-color-text: #fbbf24 !important;
+}
+.cl-userButtonPopoverActionButton:hover * {
+  color: #fbbf24 !important;
+}
+.cl-userButtonPopoverFooter {
+  display: none !important;
+}
+
+

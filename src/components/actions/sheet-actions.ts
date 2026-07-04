@@ -214,6 +214,8 @@ export async function getNextRecommendedSection(
   SheetSectionProgress,
   "id" | "slug" | "title" | "progressPercentage" | "statusLabel"
 > | null> {
+  if (!userId) return null;
+
   const sections = await getSheetSectionsWithProgress(userId);
   if (sections.length === 0) return null;
 

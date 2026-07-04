@@ -149,7 +149,7 @@ export default async function HomePage() {
               href="/sheet"
               className="group text-accent hover:text-accent/80 flex items-center gap-1 text-sm font-semibold transition-colors"
             >
-              View all {previewSections.length > 0 ? "27" : ""} tracks{" "}
+              View all tracks{" "}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
@@ -220,6 +220,12 @@ export default async function HomePage() {
               className="transition-colors hover:text-slate-300"
             >
               Sheet
+            </Link>
+            <Link
+              href="/OA"
+              className="transition-colors hover:text-slate-300"
+            >
+              OA
             </Link>
             <Link
               href="/dashboard"

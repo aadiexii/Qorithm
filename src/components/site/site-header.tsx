@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Menu, LayoutDashboard, Lock } from "lucide-react";
 import { getCurrentSession } from "@/services/Auth/auth";
 
@@ -136,7 +137,23 @@ export async function SiteHeader() {
                 Sign In
               </Link>
             ) : (
-              <UserButton appearance={{ elements: { avatarBox: "h-9 w-9" } }} />
+              <UserButton
+                appearance={{
+                  baseTheme: dark,
+                  variables: {
+                    colorBackground: "#161618",
+                    colorText: "#ffffff",
+                    colorTextSecondary: "#a1a1aa",
+                  },
+                  elements: {
+                    avatarBox: "h-9 w-9",
+                    userButtonPopoverCard: "border border-white/10 shadow-xl rounded-xl",
+                    userButtonPopoverActionButton: "hover:bg-white/5 transition-colors",
+                    userButtonPopoverActionButtonText: "text-white font-medium",
+                    userButtonPopoverFooter: "hidden",
+                  },
+                }}
+              />
             )}
           </div>
         </div>
