@@ -69,7 +69,7 @@ export function PotdCard({
           </p>
           {!isDailyEligible && (
             <Link
-              href="/settings"
+              href="#cf-handle-input"
               className="bg-accent text-accent-foreground hover:bg-accent/90 inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold shadow transition-colors"
             >
               <Zap className="h-3.5 w-3.5" /> Connect Codeforces

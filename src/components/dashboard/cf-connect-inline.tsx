@@ -86,6 +86,7 @@ export function CfConnectInline() {
 
       <div className="flex gap-2">
         <input
+          id="cf-handle-input"
           type="text"
           placeholder="Your CF handle"
           value={handle}

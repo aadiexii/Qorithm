@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 
 import { requireAdmin } from "@/services/Auth/auth";
 import { AdminNav } from "./admin-nav";
+
+export const metadata: Metadata = {
+  title: "Admin Panel | Qorithm",
+};
 
 export default async function AdminLayout({
   children,

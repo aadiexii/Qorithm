@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { getCurrentSession } from "@/services/Auth/auth";
+
+export const metadata: Metadata = {
+  title: "Dashboard | Qorithm",
+};
 import { getDashboardStats } from "@/components/actions/dashboard-actions";
 import { getTodayChallenge } from "@/components/actions/potd-actions";
 import { PotdCard } from "@/components/dashboard/potd-card";
