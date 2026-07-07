@@ -1,17 +1,14 @@
 import { SignUp } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 
 const clerkAppearance = {
-  baseTheme: dark,
   variables: {
-    colorBackground: "#161618",
-    colorInputBackground: "#161618",
+    colorBackground: "#0a0a0a",
+    colorInputBackground: "#0a0a0a",
     colorInputText: "#ffffff",
     colorText: "#ffffff",
     colorTextSecondary: "#a1a1aa",
     colorPrimary: "#ffffff",
     colorNeutral: "#27272a",
-    colorDanger: "#f87171",
     borderRadius: "0.75rem",
     fontFamily: "var(--font-manrope), system-ui, sans-serif",
   },
@@ -31,9 +28,6 @@ const clerkAppearance = {
       "bg-white text-black font-semibold rounded-lg hover:opacity-90 transition-opacity",
     footerActionText: "text-slate-400",
     footerActionLink: "text-white hover:text-slate-300 font-medium",
-    identityPreviewText: "text-white",
-    identityPreviewEditButton: "text-slate-400 hover:text-white",
-    otpCodeFieldInput: "bg-[#0a0a0a] border border-white/10 text-white",
     alert: "bg-white/5 border border-white/10 text-slate-300",
     alertText: "text-slate-300",
     alertIcon: "text-slate-400",

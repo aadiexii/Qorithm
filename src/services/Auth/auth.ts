@@ -7,7 +7,14 @@ import { users } from "@/services/Database/schema/auth";
 const ADMIN_EMAILS = ["shayan@repovive.com"];
 
 export async function getCurrentSession() {
-  const { userId: clerkUserId } = await clerkAuth();
+  let clerkUserId: string | null = null;
+  try {
+    ({ userId: clerkUserId } = await clerkAuth());
+  } catch {
+    // Clerk can't detect usage (e.g. missing middleware context during static
+    // generation or dev-server hiccups). Treat as unauthenticated.
+    return null;
+  }
 
   if (!clerkUserId) return null;
 

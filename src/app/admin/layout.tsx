@@ -4,6 +4,9 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/services/Auth/auth";
 import { AdminNav } from "./admin-nav";
 
+// Admin routes read auth at request time — never statically prerender
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Admin Panel | Qorithm",
 };
