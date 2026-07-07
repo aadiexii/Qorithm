@@ -7,6 +7,7 @@ import { getCurrentSession } from "@/services/Auth/auth";
 export const metadata: Metadata = {
   title: "Dashboard | Qorithm",
 };
+import { DashboardGreeting } from "@/components/dashboard/dashboard-greeting";
 import { getDashboardStats } from "@/components/actions/dashboard-actions";
 import { getTodayChallenge } from "@/components/actions/potd-actions";
 import { PotdCard } from "@/components/dashboard/potd-card";
@@ -15,13 +16,6 @@ import {
   CfConnectedBadge,
   CfConnectInline,
 } from "@/components/dashboard/cf-connect-inline";
-
-function getGreeting(firstName: string): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return `Good morning, ${firstName}`;
-  if (hour < 17) return `Good afternoon, ${firstName}`;
-  return `Good evening, ${firstName}`;
-}
 
 export default async function DashboardPage() {
   const session = await getCurrentSession();
@@ -33,16 +27,12 @@ export default async function DashboardPage() {
   ]);
 
   const isDailyEligible = Boolean(stats.codeforcesHandle);
-  const firstName = session.user.name.split(" ")[0] || "You";
-  const greeting = getGreeting(firstName);
 
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-12 flex flex-col items-stretch gap-6">
       {/* Greeting header */}
       <div className="text-center flex flex-col gap-2">
-        <h1 className="text-2xl font-extrabold tracking-tight text-white">
-          {greeting}
-        </h1>
+        <DashboardGreeting name={session.user.name} />
 
         {/* CF handle inline — connected state */}
         {isDailyEligible && stats.codeforcesHandle && (

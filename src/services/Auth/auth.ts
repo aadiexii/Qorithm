@@ -47,8 +47,12 @@ export async function getCurrentSession() {
   if (!email) return null;
 
   const role = ADMIN_EMAILS.includes(email) ? "admin" : "user";
+  const fullName = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim();
   const name =
-    `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || "User";
+    fullName ||
+    clerkUser.username ||
+    email.split("@")[0] ||
+    "User";
   const emailVerified =
     clerkUser.emailAddresses[0]?.verification?.status === "verified";
 
