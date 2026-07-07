@@ -25,6 +25,31 @@ export async function getCurrentSession() {
     .where(eq(users.clerkUserId, clerkUserId));
 
   if (localUser) {
+    // If name is stuck as generic "User", try to resolve a better fallback name
+    if (localUser.name === "User") {
+      const { currentUser } = await import("@clerk/nextjs/server");
+      const clerkUser = await currentUser();
+      if (clerkUser) {
+        const email = clerkUser.emailAddresses[0]?.emailAddress;
+        if (email) {
+          const fullName = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim();
+          const newName =
+            fullName ||
+            clerkUser.username ||
+            email.split("@")[0] ||
+            "User";
+          
+          if (newName !== "User") {
+            localUser.name = newName;
+            await db
+              .update(users)
+              .set({ name: newName, updatedAt: new Date() })
+              .where(eq(users.id, localUser.id));
+          }
+        }
+      }
+    }
+
     // Auto-promote to admin if email is in the list
     if (ADMIN_EMAILS.includes(localUser.email) && localUser.role !== "admin") {
       [localUser] = await db
