@@ -36,29 +36,47 @@ export async function getCurrentSession() {
     return { user: localUser };
   }
 
-  // If not in local DB, fetch from Clerk and create
+  // If not in local DB, fetch from Clerk and upsert.
+  // Uses onConflictDoUpdate so that:
+  //  • a stale dev-instance row (same email, old clerkUserId) gets reconciled
+  //  • a race condition double-insert is silently collapsed into one row
   const clerkUser = await currentUser();
   if (!clerkUser) return null;
 
   const email = clerkUser.emailAddresses[0]?.emailAddress;
   if (!email) return null;
 
-  const [newUser] = await db
+  const role = ADMIN_EMAILS.includes(email) ? "admin" : "user";
+  const name =
+    `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || "User";
+  const emailVerified =
+    clerkUser.emailAddresses[0]?.verification?.status === "verified";
+
+  const [upsertedUser] = await db
     .insert(users)
     .values({
       clerkUserId,
       email,
-      name:
-        `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() ||
-        "User",
-      emailVerified:
-        clerkUser.emailAddresses[0]?.verification?.status === "verified",
+      name,
+      emailVerified,
       image: clerkUser.imageUrl,
-      role: ADMIN_EMAILS.includes(email) ? "admin" : "user",
+      role,
+    })
+    // Conflict on email: reconcile the clerkUserId (dev→prod migration case)
+    .onConflictDoUpdate({
+      target: users.email,
+      set: {
+        clerkUserId,
+        name,
+        emailVerified,
+        image: clerkUser.imageUrl,
+        role,
+        updatedAt: new Date(),
+      },
     })
     .returning();
 
-  return { user: newUser };
+  return { user: upsertedUser };
 }
 
 export async function requireAdmin() {
