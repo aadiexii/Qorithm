@@ -43,6 +43,13 @@
       "when": 1777797549516,
       "tag": "0005_atcoder_difficulty",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1752002000000,
+      "tag": "0006_rls_fix",
+      "breakpoints": true
     }
   ]
 }
