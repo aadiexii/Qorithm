@@ -19,6 +19,10 @@ export const users = pgTable("users", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   codeforcesHandle: text("codeforces_handle"),
+  cfVerificationCode: text("cf_verification_code"),
+  cfVerificationExpires: timestamp("cf_verification_expires", { withTimezone: true }),
+  cfPendingHandle: text("cf_pending_handle"),
+  lastVerificationRequestAt: timestamp("last_verification_requested_at", { withTimezone: true }),
   role: userRoleEnum("role").notNull().default("user"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()

@@ -26,7 +26,12 @@ export default async function DashboardPage() {
     getTodayChallenge(),
   ]);
 
-  const isDailyEligible = Boolean(stats.codeforcesHandle);
+  const isVerified = Boolean(
+    session.user.codeforcesHandle && 
+    session.user.cfVerificationCode === "VERIFIED"
+  );
+
+  const isDailyEligible = isVerified;
 
   const firstName = session.user.firstName || session.user.username || session.user.email.split("@")[0];
 
@@ -42,8 +47,16 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      {/* CF connect inline — disconnected state */}
-      {!isDailyEligible && <CfConnectInline />}
+      {/* CF connect inline — disconnected or pending state */}
+      {!isDailyEligible && (
+        <CfConnectInline
+          initialPendingHandle={session.user.cfPendingHandle}
+          initialVerificationCode={session.user.cfVerificationCode}
+          initialVerificationExpires={session.user.cfVerificationExpires?.toISOString() || null}
+          needsReverification={Boolean(session.user.codeforcesHandle && !session.user.cfVerificationCode)}
+          legacyHandle={session.user.codeforcesHandle}
+        />
+      )}
 
       {/* Streak — only shown when CF is connected */}
       {isDailyEligible && (

@@ -147,9 +147,11 @@ export async function SiteHeader() {
                   },
                   elements: {
                     avatarBox: "h-9 w-9",
-                    userButtonPopoverCard: "border border-white/10 shadow-xl rounded-xl",
-                    userButtonPopoverActionButton: "hover:bg-white/5 transition-colors",
-                    userButtonPopoverActionButtonText: "text-white font-medium",
+                    userButtonPopoverCard: "border border-amber-500/20 shadow-2xl shadow-black/80 rounded-xl ml-[40px]",
+                    userButtonPopoverActionButton: "hover:bg-amber-500/10 transition-all duration-200 text-zinc-300 hover:text-amber-400 [&_svg]:hover:text-amber-400",
+                    userButtonPopoverActionButtonText: "text-zinc-200 font-medium hover:text-amber-400",
+                    userButtonPopoverActionButtonIcon: "text-zinc-400 hover:text-amber-400",
+                    userPreviewSecondaryIdentifier: "text-zinc-400",
                     userButtonPopoverFooter: "hidden",
                   },
                 }}

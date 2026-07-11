@@ -76,7 +76,7 @@ export const CodeforcesAdapter = {
     const payload = data as {
       status: string;
       comment?: string;
-      result?: { handle: string; rating?: number; avatar?: string }[];
+      result?: { handle: string; rating?: number; avatar?: string; firstName?: string }[];
     };
 
     if (payload.status !== "OK") {
@@ -96,6 +96,7 @@ export const CodeforcesAdapter = {
       handle: user.handle,
       rating: user.rating ?? null,
       avatar: user.avatar ?? null,
+      firstName: user.firstName ?? null,
     };
   },
 
