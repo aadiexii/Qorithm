@@ -28,11 +28,13 @@ export default async function DashboardPage() {
 
   const isDailyEligible = Boolean(stats.codeforcesHandle);
 
+  const firstName = session.user.firstName || session.user.username || session.user.email.split("@")[0];
+
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-12 flex flex-col items-stretch gap-6">
       {/* Greeting header */}
       <div className="text-center flex flex-col gap-2">
-        <DashboardGreeting name={session.user.name} />
+        <DashboardGreeting firstName={firstName} />
 
         {/* CF handle inline — connected state */}
         {isDailyEligible && stats.codeforcesHandle && (

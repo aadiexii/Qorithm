@@ -1,4 +1,3 @@
-import { PlatformAdapter } from "./index";
 
 async function fetchWithTimeoutAndRetry(
   url: string,
@@ -42,7 +41,7 @@ async function fetchWithTimeoutAndRetry(
   }
 }
 
-export const CodeforcesAdapter: PlatformAdapter = {
+export const CodeforcesAdapter = {
   platformId: "codeforces",
 
   async fetchProfile(handle: string) {

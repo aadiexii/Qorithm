@@ -25,27 +25,36 @@ export async function getCurrentSession() {
     .where(eq(users.clerkUserId, clerkUserId));
 
   if (localUser) {
-    // If name is stuck as generic "User", try to resolve a better fallback name
-    if (localUser.name === "User") {
+    // If name is stuck as generic "User" or firstName is null/unpopulated, sync with Clerk
+    if (localUser.name === "User" || !localUser.firstName) {
       const { currentUser } = await import("@clerk/nextjs/server");
       const clerkUser = await currentUser();
       if (clerkUser) {
         const email = clerkUser.emailAddresses[0]?.emailAddress;
         if (email) {
           const fullName = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim();
+          const emailFallback = email.split("@")[0];
           const newName =
             fullName ||
             clerkUser.username ||
-            email.split("@")[0] ||
-            "User";
+            emailFallback;
           
-          if (newName !== "User") {
-            localUser.name = newName;
-            await db
-              .update(users)
-              .set({ name: newName, updatedAt: new Date() })
-              .where(eq(users.id, localUser.id));
-          }
+          const newFirstName = clerkUser.firstName || null;
+          const newUsername = clerkUser.username || null;
+
+          localUser.name = newName;
+          localUser.firstName = newFirstName;
+          localUser.username = newUsername;
+
+          await db
+            .update(users)
+            .set({ 
+              name: newName, 
+              firstName: newFirstName,
+              username: newUsername,
+              updatedAt: new Date() 
+            })
+            .where(eq(users.id, localUser.id));
         }
       }
     }
@@ -73,11 +82,13 @@ export async function getCurrentSession() {
 
   const role = ADMIN_EMAILS.includes(email) ? "admin" : "user";
   const fullName = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim();
+  const emailFallback = email.split("@")[0];
   const name =
     fullName ||
     clerkUser.username ||
-    email.split("@")[0] ||
-    "User";
+    emailFallback;
+  const firstName = clerkUser.firstName || null;
+  const username = clerkUser.username || null;
   const emailVerified =
     clerkUser.emailAddresses[0]?.verification?.status === "verified";
 
@@ -87,6 +98,8 @@ export async function getCurrentSession() {
       clerkUserId,
       email,
       name,
+      firstName,
+      username,
       emailVerified,
       image: clerkUser.imageUrl,
       role,
@@ -97,6 +110,8 @@ export async function getCurrentSession() {
       set: {
         clerkUserId,
         name,
+        firstName,
+        username,
         emailVerified,
         image: clerkUser.imageUrl,
         role,

@@ -14,6 +14,8 @@ export const users = pgTable("users", {
   clerkUserId: text("clerk_user_id").unique(),
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
+  firstName: text("first_name"),
+  username: text("username"),
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   codeforcesHandle: text("codeforces_handle"),
